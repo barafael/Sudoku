@@ -26,6 +26,27 @@ public class SudokuGame extends Observable {
         assert isPerfectSquare(SIZE);
     }
 
+    public byte getValue(byte rowIndex, byte colIndex) {
+        if (rowIndex >= 0 && rowIndex < SIZE &&
+                colIndex >= 0 && rowIndex < SIZE) {
+            return field[rowIndex][colIndex];
+        }
+        System.err.println("Invalid access!");
+        return 0;
+    }
+
+    /**
+     * helper method to enable calling setValue with ints or literal values. Preferably unused.
+     *
+     * @param row 0..SIZE-1
+     * @param col 0..SIZE-1
+     * @param val 1..SIZE
+     * @return null if invalid arguments, this instance otherwise.
+     */
+    public SudokuGame setValue(int row, int col, int val) {
+        return setValue((byte) row, (byte) col, (byte) val);
+    }
+
     /**
      * Set a value in the grid and return the game if arguments valid, null otherwise.
      * This method can be used like this:
@@ -49,18 +70,51 @@ public class SudokuGame extends Observable {
         }
     }
 
-    /**
-     * helper method to enable calling setValue with ints or literal values. Preferably unused.
-     *
-     * @param row 0..SIZE-1
-     * @param col 0..SIZE-1
-     * @param val 1..SIZE
-     * @return null if invalid arguments, this instance otherwise.
-     */
-    public SudokuGame setValue(int row, int col, int val) {
-        return setValue((byte) row, (byte) col, (byte) val);
+    public void setRow(int rowIndex, Byte[] row) {
+        if (row.length == SIZE && rowIndex < SIZE && rowIndex >= 0) {
+            boolean correctRange = Arrays.stream(row).allMatch(i -> i >= 0 && i <= SIZE);
+            if (correctRange) {
+                for (int colIndex = 0; colIndex < SIZE; colIndex++) {
+                    field[rowIndex][colIndex] = row[colIndex];
+                }
+                setChanged();
+                notifyObservers();
+            } else {
+                System.err.println("Incorrect range!");
+            }
+        }
     }
 
+    public byte[] getRow(int rowIndex) {
+        byte[] row = new byte[SIZE];
+        for (int colIndex = 0; colIndex < SIZE; colIndex++) {
+            row[rowIndex] = field[rowIndex][colIndex];
+        }
+        return row;
+    }
+
+    public byte[] getColumn(byte colIndex) {
+        byte[] column = new byte[SIZE];
+        for (int rowIndex = 0; rowIndex < SIZE; rowIndex++) {
+            column[rowIndex] = field[rowIndex][colIndex];
+        }
+        return column;
+    }
+
+    public void setColumn(int colIndex, int[] col) {
+        if (col.length == SIZE && colIndex < SIZE && colIndex >= 0) {
+            boolean correctRange = Arrays.stream(col).allMatch(i -> i >= 0 && i <= SIZE);
+            if (correctRange) {
+                for (int rowIndex = 0; rowIndex < SIZE; rowIndex++) {
+                    field[rowIndex][colIndex] = (byte) col[rowIndex];
+                }
+                setChanged();
+                notifyObservers();
+            } else {
+                System.err.println("Incorrect range!");
+            }
+        }
+    }
 
     /**
      * Returns if the specified column contains the specified value.
@@ -74,14 +128,6 @@ public class SudokuGame extends Observable {
                 return true;
         }
         return false;
-    }
-
-    public byte[] getColumn(byte colIndex) {
-        byte[] column = new byte[SIZE];
-        for (int rowIndex = 0; rowIndex < SIZE; rowIndex++) {
-            column[rowIndex] = field[rowIndex][colIndex];
-        }
-        return column;
     }
 
     /**
@@ -114,7 +160,6 @@ public class SudokuGame extends Observable {
             throw new IllegalArgumentException();
         }
         byte blockSize = (byte) Math.sqrt(SIZE);
-        byte[][] block = new byte[blockSize][blockSize];
         for (int row = rowIndex * blockSize; row < rowIndex * blockSize + blockSize; row++) {
             for (int col = colIndex * blockSize; col < colIndex * blockSize + blockSize; col++) {
                 if (field[row][col] == value) {
@@ -132,5 +177,22 @@ public class SudokuGame extends Observable {
         } else {
             return false;
         }
+    }
+
+    public byte getSize() {
+        return SIZE;
+    }
+
+    //TODO remove this! // STOPSHIP: 24.06.16 data/models should never print, right?
+    @Override
+    public String toString () {
+        StringBuilder stringBuilder = new StringBuilder();
+        for(byte rowIndex = 0; rowIndex < SIZE; rowIndex++) {
+            for(byte colIndex = 0; colIndex < SIZE; colIndex++) {
+                stringBuilder.append(field[rowIndex][colIndex]).append(", ");
+            }
+            stringBuilder.append('\n');
+        }
+        return stringBuilder.toString();
     }
 }
