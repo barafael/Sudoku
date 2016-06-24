@@ -183,15 +183,14 @@ public class SudokuGame extends Observable {
         return SIZE;
     }
 
-    //TODO remove this! // STOPSHIP: 24.06.16 data/models should never print, right?
     @Override
-    public String toString () {
+    public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        for(byte rowIndex = 0; rowIndex < SIZE; rowIndex++) {
-            for(byte colIndex = 0; colIndex < SIZE; colIndex++) {
-                stringBuilder.append(field[rowIndex][colIndex]).append(", ");
+        for (byte rowIndex = 0; rowIndex < SIZE; rowIndex++) {
+            for (byte colIndex = 0; colIndex < SIZE-1; colIndex++) {
+                stringBuilder.append(field[rowIndex][colIndex]).append(";");
             }
-            stringBuilder.append('\n');
+            stringBuilder.append(field[rowIndex][SIZE-1]).append('\n');
         }
         return stringBuilder.toString();
     }
