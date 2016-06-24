@@ -2,6 +2,7 @@ package sudoku.game;
 
 import java.util.Arrays;
 import java.util.Observable;
+import java.util.Random;
 
 /**
  * Created by ra on 23.06.16.
@@ -24,6 +25,40 @@ public class SudokuGame extends Observable {
 
     public SudokuGame() {
         assert isPerfectSquare(SIZE);
+    }
+
+    public SudokuGame(double prepopulatedFactor) {
+        assert isPerfectSquare(SIZE);
+        populateRandom(prepopulatedFactor);
+    }
+
+    public void populateRandom(double prepopulatedFactor) {
+        if (prepopulatedFactor >= 1.0 || prepopulatedFactor < 0) {
+            System.err.println("A factor of " + prepopulatedFactor +
+                    "is not likely to lead to a fun game!");
+            return;
+        }
+        clear();
+        int numberOfPreValues = (int) (SIZE * SIZE * prepopulatedFactor);
+        Random rng = new Random();
+        for (int i = 0; i < numberOfPreValues; i++) {
+            byte row = (byte) rng.nextInt(SIZE);
+            byte col = (byte) rng.nextInt(SIZE);
+            byte val = (byte) (rng.nextInt(SIZE) + 1);
+            setValue(row, col, val);
+        }
+        setChanged();
+        notifyObservers();
+    }
+
+    private void clear() {
+        for (byte rowIndex = 0; rowIndex < SIZE; rowIndex++) {
+            for (byte colIndex = 0; colIndex < SIZE; colIndex++) {
+                field[rowIndex][colIndex] = 0;
+            }
+        }
+        setChanged();
+        notifyObservers();
     }
 
     public byte getValue(byte rowIndex, byte colIndex) {
@@ -187,10 +222,10 @@ public class SudokuGame extends Observable {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         for (byte rowIndex = 0; rowIndex < SIZE; rowIndex++) {
-            for (byte colIndex = 0; colIndex < SIZE-1; colIndex++) {
+            for (byte colIndex = 0; colIndex < SIZE - 1; colIndex++) {
                 stringBuilder.append(field[rowIndex][colIndex]).append(";");
             }
-            stringBuilder.append(field[rowIndex][SIZE-1]).append('\n');
+            stringBuilder.append(field[rowIndex][SIZE - 1]).append('\n');
         }
         return stringBuilder.toString();
     }
