@@ -1,31 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ToolBar?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
       prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="sudoku.controller.Controller">
-    <children>
-        <ToolBar prefHeight="40.0" prefWidth="200.0">
-            <items>
-                <Button fx:id="csvLoadButton" blendMode="DARKEN" mnemonicParsing="false" onAction="#loadCSVFile"
-                        text="Load CSV File"/>
-                <Button fx:id="csvWriteButton" blendMode="DARKEN" mnemonicParsing="false" onAction="#writeCSVFile"
-                        text="Write CSV File"/>
-            </items>
-        </ToolBar>
-        <GridPane prefHeight="357.0" prefWidth="600.0">
-            <gridLinesVisible>true</gridLinesVisible>
-            <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
-            </columnConstraints>
-            <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-            </rowConstraints>
-        </GridPane>
-    </children>
+    <ToolBar prefHeight="40.0" prefWidth="400.0">
+        <items>
+            <Button fx:id="New" mnemonicParsing="false" onAction="#newGame" text="New"/>
+            <Button fx:id="Restart" mnemonicParsing="false" onAction="#restartGame"
+                    text="Restart"/>
+            <Button mnemonicParsing="false" text="Solve"/>
+            <Separator prefHeight="28.0" prefWidth="288.0"/>
+            <MenuButton alignment="TOP_RIGHT" mnemonicParsing="false" text="Save/Load">
+                <items>
+                    <MenuItem fx:id="csvLoadButton" mnemonicParsing="false" onAction="#loadCSVFile"
+                              text="Load CSV File"/>
+                    <MenuItem fx:id="csvWriteButton" mnemonicParsing="false" onAction="#writeCSVFile"
+                              text="Write CSV File"/>
+                </items>
+            </MenuButton>
+        </items>
+    </ToolBar>
 </VBox>
