@@ -6,7 +6,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import sudoku.controller.csvIO.CSVInput;
 import sudoku.controller.csvIO.CSVOutput;
-import sudoku.game.SudokuGame;
+import sudoku.game.SudokuBoard;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,24 +14,26 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static sudoku.game.generator.InitialStateGenerator.generateInitialState;
+
 public class Controller {
     private static final double EASY = 0.3;
     private static final double HARD = 0.1;
-    Stage primaryStage;
-    SudokuGame game;
-    CSVInput loader;
-    CSVOutput writer;
-    File sudokuInitialState;
-    Path gamesaves = Paths.get("gamesaves");
+    private static final int GAME_SIZE = 9;
+    private Stage primaryStage;
+    private SudokuBoard currentGame;
+    private CSVInput loader;
+    private CSVOutput writer;
+    private File initialState;
+    private Path gamesaves = Paths.get("gamesaves");
 
-    public Controller(SudokuGame game, Stage primaryStage) {
-        this.game = game;
+    public Controller(Stage primaryStage) {
         this.primaryStage = primaryStage;
         loader = new CSVInput();
         writer = new CSVOutput();
         try {
             Files.createDirectories(gamesaves);
-            sudokuInitialState = new File(gamesaves.toString() + "/initialState.csv");
+            initialState = new File(gamesaves.toString() + "/initialState.csv");
             newGame();
         } catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -57,8 +59,10 @@ public class Controller {
                 new FileChooser.ExtensionFilter("All Files", "*.*"));
         File selectedFile = fileChooser.showOpenDialog(primaryStage);
         if (selectedFile != null) {
-            loader.loadCSV(game, selectedFile);
-            writer.writeCSV(game, sudokuInitialState);
+            SudokuBoard newGame = loader.loadCSV(selectedFile);
+            if (newGame != null) {
+                writer.writeCSV(currentGame, initialState);
+            }
         }
     }
 
@@ -71,16 +75,16 @@ public class Controller {
                 new FileChooser.ExtensionFilter("All Files", "*.*"));
         File selectedFile = fileChooser.showSaveDialog(primaryStage);
         if (selectedFile != null) {
-            writer.writeCSV(game, selectedFile);
+            writer.writeCSV(currentGame, selectedFile);
         }
     }
 
     public void newGame() {
-        game.populateRandom(EASY);
-        writer.writeCSV(game, sudokuInitialState);
+        currentGame = new SudokuBoard(generateInitialState(GAME_SIZE));
+        writer.writeCSV(currentGame, initialState);
     }
 
     public void restartGame() {
-        loader.loadCSV(game, sudokuInitialState);
+        currentGame = loader.loadCSV(initialState);
     }
 }
