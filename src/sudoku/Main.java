@@ -6,25 +6,21 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import sudoku.controller.Controller;
-import sudoku.game.SudokuGame;
 
 public class Main extends Application {
-
-    private static SudokuGame game;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("view/sudoku.fxml"));
-        loader.setControllerFactory(c -> new Controller(game, primaryStage));
+        loader.setControllerFactory(c -> new Controller(primaryStage));
+        setUserAgentStylesheet(STYLESHEET_MODENA);
         Parent root = loader.load();
         primaryStage.setTitle("Sudoku");
-        primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.setScene(new Scene(root, 600, 450));
         primaryStage.show();
     }
 
-
     public static void main(String[] args) {
-        game = new SudokuGame();
         launch(args);
     }
 }

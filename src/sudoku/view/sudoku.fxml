@@ -6,20 +6,18 @@
       prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="sudoku.controller.Controller">
     <ToolBar prefHeight="40.0" prefWidth="400.0">
-        <items>
-            <Button fx:id="New" mnemonicParsing="false" onAction="#newGame" text="New"/>
-            <Button fx:id="Restart" mnemonicParsing="false" onAction="#restartGame"
-                    text="Restart"/>
-            <Button mnemonicParsing="false" text="Solve"/>
-            <Separator prefHeight="28.0" prefWidth="288.0"/>
-            <MenuButton alignment="TOP_RIGHT" mnemonicParsing="false" text="Save/Load">
-                <items>
-                    <MenuItem fx:id="csvLoadButton" mnemonicParsing="false" onAction="#loadCSVFile"
-                              text="Load CSV File"/>
-                    <MenuItem fx:id="csvWriteButton" mnemonicParsing="false" onAction="#writeCSVFile"
-                              text="Write CSV File"/>
-                </items>
-            </MenuButton>
-        </items>
+        <Button fx:id="New" mnemonicParsing="false" onAction="#newGame" text="New"/>
+        <Button fx:id="Restart" mnemonicParsing="false" onAction="#restartGame"
+                text="Restart"/>
+        <Button mnemonicParsing="false" text="Solve"/>
+        <Separator prefHeight="28.0" prefWidth="288.0"/>
+        <MenuButton alignment="TOP_RIGHT" mnemonicParsing="false" text="Save/Load">
+            <items>
+                <MenuItem fx:id="csvLoadButton" mnemonicParsing="false" onAction="#loadCSVFile"
+                          text="Load CSV File"/>
+                <MenuItem fx:id="csvWriteButton" mnemonicParsing="false" onAction="#writeCSVFile"
+                          text="Write CSV File"/>
+            </items>
+        </MenuButton>
     </ToolBar>
 </VBox>
