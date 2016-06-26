@@ -1,23 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.VBox?>
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
-      prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+<?import javafx.scene.layout.*?>
+<VBox fx:id="mainVBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+      prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="sudoku.controller.Controller">
-    <ToolBar prefHeight="40.0" prefWidth="400.0">
+    <ToolBar fx:id="toolbar" prefHeight="40.0" prefWidth="720.0">
         <Button fx:id="New" mnemonicParsing="false" onAction="#newGame" text="New"/>
-        <Button fx:id="Restart" mnemonicParsing="false" onAction="#restartGame"
-                text="Restart"/>
-        <Button mnemonicParsing="false" text="Solve"/>
-        <Separator prefHeight="28.0" prefWidth="288.0"/>
-        <MenuButton alignment="TOP_RIGHT" mnemonicParsing="false" text="Save/Load">
-            <items>
-                <MenuItem fx:id="csvLoadButton" mnemonicParsing="false" onAction="#loadCSVFile"
-                          text="Load CSV File"/>
-                <MenuItem fx:id="csvWriteButton" mnemonicParsing="false" onAction="#writeCSVFile"
-                          text="Write CSV File"/>
-            </items>
+        <Button fx:id="Restart" mnemonicParsing="false" onAction="#restartGame" text="Restart"/>
+        <Button fx:id="Solve" mnemonicParsing="false" text="Solve"/>
+        <Pane HBox.hgrow="ALWAYS"/>
+        <MenuButton mnemonicParsing="false" text="Save/Load">
+            <MenuItem fx:id="csvLoadButton" mnemonicParsing="false" onAction="#loadCSVFile"
+                      text="Load CSV File"/>
+            <MenuItem fx:id="csvWriteButton" mnemonicParsing="false" onAction="#writeCSVFile"
+                      text="Write CSV File"/>
         </MenuButton>
     </ToolBar>
+    <BorderPane prefHeight="465.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
+        <center>
+            <GridPane fx:id="mainGridpane" alignment="CENTER" focusTraversable="true" gridLinesVisible="true"
+                      BorderPane.alignment="CENTER">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
+                    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
+                    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                </rowConstraints>
+                <BorderPane.margin>
+                    <Insets bottom="50.0" left="165.0" right="165.0" top="50.0"/>
+                </BorderPane.margin>
+            </GridPane>
+        </center>
+    </BorderPane>
 </VBox>
