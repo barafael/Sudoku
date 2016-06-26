@@ -2,6 +2,11 @@ package sudoku.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Separator;
+import javafx.scene.control.ToolBar;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import sudoku.controller.csvIO.CSVInput;
@@ -14,40 +19,42 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static sudoku.game.generator.InitialStateGenerator.generateInitialState;
-
 public class Controller {
-    private static final double EASY = 0.3;
-    private static final double HARD = 0.1;
+    private final double EASY = 0.3;
+    private final double HARD = 0.1;
     private static final int GAME_SIZE = 9;
-    private Stage primaryStage;
-    private SudokuBoard currentGame;
-    private CSVInput loader;
-    private CSVOutput writer;
+    private final Stage primaryStage;
+    private final SudokuBoard currentGame;
+    private final CSVInput loader;
+    private final CSVOutput writer;
     private File initialState;
-    private Path gamesaves = Paths.get("gamesaves");
+    private final Path gamesaves = Paths.get("gamesaves");
+    public Button New;
+    public Button Restart;
+    @FXML
+    private VBox mainVBox;
+    @FXML
+    public ToolBar toolbar;
+    @FXML
+    public Separator separator;
+    @FXML
+    public GridPane mainGridpane;
 
-    public Controller(Stage primaryStage) {
+    public Controller(Stage primaryStage, SudokuBoard game) {
         this.primaryStage = primaryStage;
+        currentGame = game;
         loader = new CSVInput();
         writer = new CSVOutput();
         try {
             Files.createDirectories(gamesaves);
             initialState = new File(gamesaves.toString() + "/initialState.csv");
-            newGame();
         } catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error Dialog");
             alert.setHeaderText("File I/O Error");
             alert.setContentText("There was an error during gamesave directory opening/writing.");
             alert.showAndWait();
-
         }
-    }
-
-    @FXML
-    public void initialize() {
-
     }
 
     public void loadCSVFile() {
@@ -80,11 +87,11 @@ public class Controller {
     }
 
     public void newGame() {
-        currentGame = new SudokuBoard(generateInitialState(GAME_SIZE));
+        currentGame.newGame(GAME_SIZE);
         writer.writeCSV(currentGame, initialState);
     }
 
     public void restartGame() {
-        currentGame = loader.loadCSV(initialState);
+        currentGame.newGame(GAME_SIZE);
     }
 }
