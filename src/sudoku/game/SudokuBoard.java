@@ -1,5 +1,7 @@
 package sudoku.game;
 
+import sudoku.game.generator.InitialStateGenerator;
+
 import java.util.Arrays;
 import java.util.Observable;
 
@@ -27,6 +29,11 @@ public class SudokuBoard extends Observable {
         } else {
             initial = new int[SIZE][SIZE]; // board can stay at 0
         }
+        assert isPerfectSquare(SIZE);
+    }
+
+    public SudokuBoard() {
+        initial = new int[SIZE][SIZE];
         assert isPerfectSquare(SIZE);
     }
 
@@ -174,5 +181,14 @@ public class SudokuBoard extends Observable {
             stringBuilder.append(board[rowIndex][SIZE - 1]).append('\n'); // no ';' for last
         }
         return stringBuilder.toString();
+    }
+
+    public void newGame(int size) {
+        int[][] newBoard = InitialStateGenerator.generateInitialState(size);
+        for (int rowIndex = 0; rowIndex < size; rowIndex++) {
+            System.arraycopy(newBoard, 0, board, 0, size);
+        }
+        setChanged();
+        notifyObservers();
     }
 }
