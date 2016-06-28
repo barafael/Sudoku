@@ -136,11 +136,18 @@ public class SudokuBoard extends Observable {
         return false;
     }
 
-    public boolean squareContains(final int rowIndex, final int colIndex, final int value) {
-        if (rowIndex < SIZE && rowIndex >= 0 &&
-                colIndex < SIZE && rowIndex >= 0 &&
-                value <= SIZE && value > 0) {
-            return squareContainsHelper(rowIndex / 3, colIndex / 3, value);
+    /**
+     * Returns if the square containing specified entry contains the given val.
+     *
+     * @param row index of a row in the square
+     * @param col index of a col in the square
+     * @return true if val present in specified square.
+     */
+    public boolean squareContains(final int row, final int col, final int val) {
+        if (row < SIZE && row >= 0 &&
+                col < SIZE && row >= 0 &&
+                val <= SIZE && val > 0) {
+            return squareContainsHelper(row / 3, col / 3, val);
         } else return false;
     }
 
@@ -224,3 +231,4 @@ public class SudokuBoard extends Observable {
         return board;
     }
 }
+//TODO delete superfluous methods

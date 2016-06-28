@@ -8,7 +8,7 @@ import java.util.Arrays;
  * Part of Sudoku, in package sudoku.game.
  */
 public class SudokuBoardTest {
-    SudokuBoard game;
+    private SudokuBoard game;
 
     @org.junit.Before
     public void setUp() throws Exception {
@@ -46,10 +46,10 @@ public class SudokuBoardTest {
         game.setValue(0, 2, 1);
         game.setValue(2, 0, 3);
         game.setValue(1, 1, 5);
-        assert game.squareContains(0, 0, 1);
-        assert game.squareContains( 0,  0,  3);
-        assert game.squareContains( 0,  0,  5);
-        assert !game.squareContains( 2,  2,  1);
+        assert game.squareContains(1, 1, 1);
+        assert game.squareContains(2,  2,  3);
+        assert game.squareContains(0,  0,  5);
+        assert !game.squareContains( 2,  2,  4);
     }
 
     @org.junit.Test
@@ -57,10 +57,10 @@ public class SudokuBoardTest {
         game.setValue(1, 1, 1);
         game.setValue(8, 1, 3);
         game.setValue(3, 1, 5);
-        assert game.columnContains(1, 3);
-        assert game.columnContains(1, 5);
-        assert game.columnContains(8, 7);
-        assert!game.columnContains(7, 1);
+        assert game.colContains(1, 3);
+        assert game.colContains(1, 5);
+        assert game.colContains(8, 7);
+        assert!game.colContains(7, 1);
     }
 
     @org.junit.Test
