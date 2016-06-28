@@ -38,7 +38,8 @@ public class BacktrackSolver {
     }
 
     private boolean validPosition(int row, int col, int value) {
-        return !board.rowContains(row, value) && !board.colContains(col, value) &&
-                !board.squareContains(row, col, value);
+        return value == 0 ||
+                (!board.rowContains(row, value) && !board.colContains(col, value) &&
+                        !board.squareContains(row, col, value));
     }
 }
