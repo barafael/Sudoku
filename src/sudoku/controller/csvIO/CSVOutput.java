@@ -18,7 +18,7 @@ public class CSVOutput {
      * @param game game field to be filled with csv entries
      * @param file csv file containing all entries, directly mapped to a sudoku field
      */
-    public void writeCSV(SudokuBoard game, File file) {
+    public static void writeCSV(SudokuBoard game, File file) {
         try {
             Files.write(file.toPath(), game.toString().getBytes());
         } catch (IOException e) {

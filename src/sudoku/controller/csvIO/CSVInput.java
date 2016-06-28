@@ -11,10 +11,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by ra on 24.06.16.
- * Part of Sudoku, in package sudoku.controller.csvIO.
- */
 public class CSVInput {
     /**
      * Method to load a .csv file.
