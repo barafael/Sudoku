@@ -52,6 +52,10 @@ public class SudokuBoard extends Observable {
         return 0;
     }
 
+    public boolean isInitial(int row, int col) {
+        return initial[row][col] != 0;
+    }
+
     private void clear() {
         for (int rowIndex = 0; rowIndex < SIZE; rowIndex++) {
             for (int colIndex = 0; colIndex < SIZE; colIndex++) {
@@ -73,7 +77,7 @@ public class SudokuBoard extends Observable {
     public boolean setValue(int rowIndex, int colIndex, int valIndex) {
         if (rowIndex < SIZE && rowIndex >= 0 &&
                 colIndex < SIZE && colIndex >= 0 &&
-                valIndex <= SIZE && valIndex > 0) { // valid arguments?
+                valIndex <= SIZE && valIndex >= 0) { // valid arguments?
 
             if (initial[rowIndex][colIndex] != 0) {
                 System.err.println("write on initial position!");
@@ -110,7 +114,7 @@ public class SudokuBoard extends Observable {
      * @param colIndex 0..SIZE-1
      * @return true if column at colIndex contains value.
      */
-    public boolean columnContains(final int colIndex, final int value) {
+    public boolean colContains(final int colIndex, final int value) {
         for (int rowIndex = 0; rowIndex < SIZE; rowIndex++) {
             if (board[rowIndex][colIndex] == value)
                 return true;
@@ -132,24 +136,29 @@ public class SudokuBoard extends Observable {
         return false;
     }
 
+    public boolean squareContains(final int rowIndex, final int colIndex, final int value) {
+        if (rowIndex < SIZE && rowIndex >= 0 &&
+                colIndex < SIZE && rowIndex >= 0 &&
+                value <= SIZE && value > 0) {
+            return squareContainsHelper(rowIndex / 3, colIndex / 3, value);
+        } else return false;
+    }
+
     /**
      * Returns if the specified square contains the given value.
      *
-     * @param rowIndex index of the row the square starts on divided by sqrt(SIZE)
-     *                 I.e., to get to the middle row in a sudoku of 9,
-     *                 rowIndex would be 1
-     * @param colIndex index of the column the square starts on divided by sqrt(SIZE)
-     *                 I.e., to get to the first column in a sudoku of 9,
-     *                 colIndex would be 0
+     * @param squareRowIndex index of the row the square starts on divided by sqrt(SIZE)
+     *                       I.e., to get to the middle row in a sudoku of 9,
+     *                       squareRowIndex would be 1
+     * @param squareColIndex index of the column the square starts on divided by sqrt(SIZE)
+     *                       I.e., to get to the first column in a sudoku of 9,
+     *                       squareColIndex would be 0
      * @return true if value present in specified square.
      */
-    boolean squareContains(final int rowIndex, final int colIndex, final int value)  {
-        if (rowIndex * rowIndex > SIZE || colIndex * colIndex > SIZE) {
-            throw new IllegalArgumentException();
-        }
+    private boolean squareContainsHelper(final int squareRowIndex, final int squareColIndex, final int value) {
         int blockSize = (int) Math.sqrt(SIZE);
-        for (int row = rowIndex * blockSize; row < rowIndex * blockSize + blockSize; row++) {
-            for (int col = colIndex * blockSize; col < colIndex * blockSize + blockSize; col++) {
+        for (int row = squareRowIndex * blockSize; row < squareRowIndex * blockSize + blockSize; row++) {
+            for (int col = squareColIndex * blockSize; col < squareColIndex * blockSize + blockSize; col++) {
                 if (board[row][col] == value) {
                     return true;
                 }
@@ -171,8 +180,7 @@ public class SudokuBoard extends Observable {
         return SIZE;
     }
 
-    @Override
-    public String toString() {
+    public String toCSV() {
         StringBuilder stringBuilder = new StringBuilder();
         for (int rowIndex = 0; rowIndex < SIZE; rowIndex++) {
             for (int colIndex = 0; colIndex < SIZE - 1; colIndex++) { // all but last, ';' each
@@ -183,6 +191,26 @@ public class SudokuBoard extends Observable {
         return stringBuilder.toString();
     }
 
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < 9; ++i) {
+            if (i % 3 == 0)
+                stringBuilder.append(" -----------------------\n");
+            for (int j = 0; j < 9; ++j) {
+                if (j % 3 == 0) stringBuilder.append("| ");
+                stringBuilder.append(board[i][j] == 0
+                        ? " "
+                        : board[i][j]);
+
+                stringBuilder.append(' ');
+            }
+            stringBuilder.append("|\n");
+        }
+        stringBuilder.append(" -----------------------\n");
+        return stringBuilder.toString();
+    }
+
     public void newGame(int size) {
         int[][] newBoard = InitialStateGenerator.generateInitialState(size);
         for (int rowIndex = 0; rowIndex < size; rowIndex++) {
@@ -190,5 +218,9 @@ public class SudokuBoard extends Observable {
         }
         setChanged();
         notifyObservers();
+    }
+
+    public int[][] getBoard() {
+        return board;
     }
 }
