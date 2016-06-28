@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <VBox fx:id="mainVBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
@@ -11,31 +10,46 @@
         <Button fx:id="Restart" mnemonicParsing="false" onAction="#restartGame" text="Restart"/>
         <Button fx:id="Solve" mnemonicParsing="false" text="Solve"/>
         <Pane HBox.hgrow="ALWAYS"/>
-        <MenuButton mnemonicParsing="false" text="Save/Load">
+        <MenuButton fx:id="csvIO" mnemonicParsing="false" text="Save/Load">
             <MenuItem fx:id="csvLoadButton" mnemonicParsing="false" onAction="#loadCSVFile"
                       text="Load CSV File"/>
             <MenuItem fx:id="csvWriteButton" mnemonicParsing="false" onAction="#writeCSVFile"
                       text="Write CSV File"/>
         </MenuButton>
     </ToolBar>
-    <BorderPane prefHeight="465.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
+    <BorderPane fx:id="mainBorderpane" prefHeight="465.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
         <center>
             <GridPane fx:id="mainGridpane" alignment="CENTER" focusTraversable="true" gridLinesVisible="true"
                       BorderPane.alignment="CENTER">
                 <columnConstraints>
-                    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
-                    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
-                    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
+                    <ColumnConstraints hgrow="ALWAYS" minWidth="70.0" prefWidth="70.0" maxWidth="70.0"/>
+                    <ColumnConstraints hgrow="ALWAYS" minWidth="70.0" prefWidth="70.0" maxWidth="70.0"/>
+                    <ColumnConstraints hgrow="ALWAYS" minWidth="70.0" prefWidth="70.0" maxWidth="70.0"/>
+                    <ColumnConstraints hgrow="ALWAYS" minWidth="70.0" prefWidth="70.0" maxWidth="70.0"/>
+                    <ColumnConstraints hgrow="ALWAYS" minWidth="70.0" prefWidth="70.0" maxWidth="70.0"/>
+                    <ColumnConstraints hgrow="ALWAYS" minWidth="70.0" prefWidth="70.0" maxWidth="70.0"/>
+                    <ColumnConstraints hgrow="ALWAYS" minWidth="70.0" prefWidth="70.0" maxWidth="70.0"/>
+                    <ColumnConstraints hgrow="ALWAYS" minWidth="70.0" prefWidth="70.0" maxWidth="70.0"/>
+                    <ColumnConstraints hgrow="ALWAYS" minWidth="70.0" prefWidth="70.0" maxWidth="70.0"/>
                 </columnConstraints>
                 <rowConstraints>
-                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                    <RowConstraints minHeight="70.0" prefHeight="70.0" maxHeight="70.0" vgrow="SOMETIMES"/>
+                    <RowConstraints minHeight="70.0" prefHeight="70.0" maxHeight="70.0" vgrow="SOMETIMES"/>
+                    <RowConstraints minHeight="70.0" prefHeight="70.0" maxHeight="70.0" vgrow="SOMETIMES"/>
+                    <RowConstraints minHeight="70.0" prefHeight="70.0" maxHeight="70.0" vgrow="SOMETIMES"/>
+                    <RowConstraints minHeight="70.0" prefHeight="70.0" maxHeight="70.0" vgrow="SOMETIMES"/>
+                    <RowConstraints minHeight="70.0" prefHeight="70.0" maxHeight="70.0" vgrow="SOMETIMES"/>
+                    <RowConstraints minHeight="70.0" prefHeight="70.0" maxHeight="70.0" vgrow="SOMETIMES"/>
+                    <RowConstraints minHeight="70.0" prefHeight="70.0" maxHeight="70.0" vgrow="SOMETIMES"/>
+                    <RowConstraints minHeight="70.0" prefHeight="70.0" maxHeight="70.0" vgrow="SOMETIMES"/>
                 </rowConstraints>
-                <BorderPane.margin>
-                    <Insets bottom="50.0" left="165.0" right="165.0" top="50.0"/>
-                </BorderPane.margin>
             </GridPane>
         </center>
+        <left>
+            <Pane minWidth="30.0" HBox.hgrow="ALWAYS"/>
+        </left>
+        <right>
+            <Pane minWidth="30.0" HBox.hgrow="ALWAYS"/>
+        </right>
     </BorderPane>
 </VBox>
