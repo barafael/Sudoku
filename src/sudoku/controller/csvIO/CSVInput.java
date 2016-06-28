@@ -22,7 +22,7 @@ public class CSVInput {
      * @param file CSV file containing all entries, directly mapped to a sudoku field
      * @return a sudoku board with entries from file
      */
-    public SudokuBoard loadCSV(File file) {
+    public static SudokuBoard loadCSV(File file) {
         try (CSVReader csvReader = new CSVReader(new FileReader(file), ';')) {
             List<String[]> lines = csvReader.readAll();
             List<Integer[]> rows = parseStringLines(lines);
@@ -53,7 +53,7 @@ public class CSVInput {
         return null;
     }
 
-    private int checkDimensions(List<Integer[]> rows) {
+    private static int checkDimensions(List<Integer[]> rows) {
         int length = rows.get(0).length;
         boolean correct = true;
         for (Integer[] integers: rows) {
@@ -67,7 +67,7 @@ public class CSVInput {
         return correct ? length : 0;
     }
 
-    private List<Integer[]> parseStringLines(List<String[]> lines) throws NumberFormatException {
+    private static List<Integer[]> parseStringLines(List<String[]> lines) throws NumberFormatException {
         List<Integer[]> rows = new ArrayList<>(lines.size());
         for (String[] strings : lines) {
             Integer[] row = new Integer[strings.length];
