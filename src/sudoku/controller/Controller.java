@@ -3,10 +3,9 @@ package sudoku.controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.Separator;
 import javafx.scene.control.ToolBar;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import sudoku.controller.csvIO.CSVInput;
@@ -20,32 +19,31 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class Controller {
-    private final double EASY = 0.3;
-    private final double HARD = 0.1;
-    private static final int GAME_SIZE = 9;
+    private final double EASY = 0.5;
+    private final double HARD = 0.2;
+    private static final int SIZE = 9;
     private final Stage primaryStage;
     private final SudokuBoard currentGame;
-    private final CSVInput loader;
-    private final CSVOutput writer;
     private File initialState;
-    private final Path gamesaves = Paths.get("gamesaves");
-    public Button New;
-    public Button Restart;
+
     @FXML
-    private VBox mainVBox;
+    public Button Solve;
+    @FXML
+    public Button New;
+    @FXML
+    public Button Restart;
     @FXML
     public ToolBar toolbar;
     @FXML
-    public Separator separator;
+    public BorderPane mainBorderpane;
     @FXML
     public GridPane mainGridpane;
 
     public Controller(Stage primaryStage, SudokuBoard game) {
         this.primaryStage = primaryStage;
         currentGame = game;
-        loader = new CSVInput();
-        writer = new CSVOutput();
         try {
+            Path gamesaves = Paths.get("gamesaves");
             Files.createDirectories(gamesaves);
             initialState = new File(gamesaves.toString() + "/initialState.csv");
         } catch (IOException e) {
@@ -57,6 +55,10 @@ public class Controller {
         }
     }
 
+    @FXML
+    public void initialize() {
+    }
+
     public void loadCSVFile() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
@@ -66,9 +68,9 @@ public class Controller {
                 new FileChooser.ExtensionFilter("All Files", "*.*"));
         File selectedFile = fileChooser.showOpenDialog(primaryStage);
         if (selectedFile != null) {
-            SudokuBoard newGame = loader.loadCSV(selectedFile);
+            SudokuBoard newGame = CSVInput.loadCSV(selectedFile);
             if (newGame != null) {
-                writer.writeCSV(currentGame, initialState);
+                CSVOutput.writeCSV(currentGame, initialState);
             }
         }
     }
@@ -82,16 +84,16 @@ public class Controller {
                 new FileChooser.ExtensionFilter("All Files", "*.*"));
         File selectedFile = fileChooser.showSaveDialog(primaryStage);
         if (selectedFile != null) {
-            writer.writeCSV(currentGame, selectedFile);
+            CSVOutput.writeCSV(currentGame, selectedFile);
         }
     }
 
     public void newGame() {
-        currentGame.newGame(GAME_SIZE);
-        writer.writeCSV(currentGame, initialState);
+        currentGame.newGame(SIZE);
+        CSVOutput.writeCSV(currentGame, initialState);
     }
 
     public void restartGame() {
-        currentGame.newGame(GAME_SIZE);
+        currentGame.newGame(SIZE);
     }
 }
