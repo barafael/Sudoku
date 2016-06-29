@@ -1,11 +1,10 @@
 package sudoku.controller;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ToolBar;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import sudoku.controller.csvIO.CSVInput;
@@ -17,14 +16,19 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Observable;
+import java.util.Observer;
 
-public class Controller {
+public class Controller implements Observer {
     private final double EASY = 0.5;
     private final double HARD = 0.2;
     private static final int SIZE = 9;
     private final Stage primaryStage;
     private final SudokuBoard currentGame;
     private File initialState;
+    private final TextField[][] textFields = new TextField[SIZE][SIZE];
+    private final Label[][] labels = new Label[SIZE][SIZE];
+    public VBox mainVBox;
 
     @FXML
     public Button Solve;
@@ -57,6 +61,22 @@ public class Controller {
 
     @FXML
     public void initialize() {
+        currentGame.addObserver(this);
+
+        mainGridpane.setMaxWidth(1100);
+        mainGridpane.setMinWidth(1000);
+        mainGridpane.setMaxHeight(800);
+        mainGridpane.setMinHeight(700);
+
+        for (int row = 0; row < SIZE; row++) {
+            for (int col = 0; col < SIZE; col++) {
+                labels[row][col] = new Label("");
+                labels[row][col].setVisible(false);
+                textFields[row][col] = new TextField("");
+                // textFields[row][col].setVisible(false);
+                mainGridpane.add(textFields[row][col], row, col);
+            }
+        }
     }
 
     public void loadCSVFile() {
@@ -68,10 +88,8 @@ public class Controller {
                 new FileChooser.ExtensionFilter("All Files", "*.*"));
         File selectedFile = fileChooser.showOpenDialog(primaryStage);
         if (selectedFile != null) {
-            SudokuBoard newGame = CSVInput.loadCSV(selectedFile);
-            if (newGame != null) {
-                CSVOutput.writeCSV(currentGame, initialState);
-            }
+            CSVInput.loadCSV(selectedFile, currentGame);
+            CSVOutput.writeCSV(currentGame, initialState);
         }
     }
 
@@ -94,6 +112,29 @@ public class Controller {
     }
 
     public void restartGame() {
-        currentGame.newGame(SIZE);
+        CSVInput.loadCSV(initialState, currentGame);
+    }
+
+    /**
+     * This method is called whenever the observed object is changed. An
+     * application calls an <tt>Observable</tt> object's
+     * <code>notifyObservers</code> method to have all the object's
+     * observers notified of the change.
+     *
+     * @param o   the observable object.
+     * @param arg an argument passed to the <code>notifyObservers</code>
+     */
+    @Override
+    public void update(Observable o, Object arg) {
+        System.out.println("board changed!");
+        if (arg instanceof int[][]) {
+            int[][] board = (int[][]) arg;
+            for (int row = 0; row < SIZE; row++) {
+                for (int col = 0; col < SIZE; col++) {
+                    labels[row][col].setText(board[row][col] + "");
+                    textFields[row][col].setText(board[row][col] + "");
+                }
+            }
+        }
     }
 }
