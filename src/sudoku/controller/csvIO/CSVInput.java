@@ -18,7 +18,7 @@ public class CSVInput {
      * @param file CSV file containing all entries, directly mapped to a sudoku field
      * @return a sudoku board with entries from file
      */
-    public static SudokuBoard loadCSV(File file) {
+    public static void loadCSV(File file, SudokuBoard board) {
         try (CSVReader csvReader = new CSVReader(new FileReader(file), ';')) {
             List<String[]> lines = csvReader.readAll();
             List<Integer[]> rows = parseStringLines(lines);
@@ -31,7 +31,7 @@ public class CSVInput {
                         newBoard[rowIndex][colIndex] = row[colIndex];
                     }
                 }
-                return new SudokuBoard(newBoard);
+                board.setBoard(newBoard);
             }
         } catch (NumberFormatException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -46,7 +46,6 @@ public class CSVInput {
             alert.setContentText("There was an error during opening of the file you requested.");
             alert.showAndWait();
         }
-        return null;
     }
 
     private static int checkDimensions(List<Integer[]> rows) {
