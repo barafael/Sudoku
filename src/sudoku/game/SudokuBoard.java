@@ -22,8 +22,6 @@ public class SudokuBoard extends Observable {
         if (initialState.length == SIZE && initialState[0].length == SIZE && correctRange(initialState)) {
             initial = initialState;
             for (int rowIndex = 0; rowIndex < SIZE; rowIndex++) { // initialize board as well
-                //for (int colIndex = 0; colIndex < SIZE; colIndex++) {
-                //    board[rowIndex][colIndex] = initial[rowIndex][colIndex];
                 System.arraycopy(initial[rowIndex], 0, board[rowIndex], 0, SIZE);
             }
         } else {
@@ -56,16 +54,6 @@ public class SudokuBoard extends Observable {
         return initial[row][col] != 0;
     }
 
-    private void clear() {
-        for (int rowIndex = 0; rowIndex < SIZE; rowIndex++) {
-            for (int colIndex = 0; colIndex < SIZE; colIndex++) {
-                setValue(rowIndex, colIndex, 0); // only writes to board, not initial state
-            }
-        }
-        setChanged();
-        notifyObservers();
-    }
-
     /**
      * Set a value in the grid and return true if arguments valid, false otherwise.
      *
@@ -85,19 +73,11 @@ public class SudokuBoard extends Observable {
             }
             board[rowIndex][colIndex] = valIndex;
             setChanged();
-            notifyObservers();
+            notifyObservers(board);
             return true;
         } else {
             return false;
         }
-    }
-
-    int[] getRow(int rowIndex) {
-        int[] row = new int[SIZE];
-        for (int colIndex = 0; colIndex < SIZE; colIndex++) {
-            row[rowIndex] = board[rowIndex][colIndex];
-        }
-        return row;
     }
 
     int[] getColumn(int colIndex) {
@@ -224,11 +204,18 @@ public class SudokuBoard extends Observable {
             System.arraycopy(newBoard, 0, board, 0, size);
         }
         setChanged();
-        notifyObservers();
+        notifyObservers(board);
     }
 
-    public int[][] getBoard() {
-        return board;
+    public void setBoard(int[][] board) {
+        // board is final
+        for (int row = 0; row < SIZE; row++) {
+            for (int col = 0; col < SIZE; col++) {
+                board[row][col] = board[row][col];
+            }
+        }
+        setChanged();
+        notifyObservers(board);
     }
 }
 //TODO delete superfluous methods
