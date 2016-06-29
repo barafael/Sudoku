@@ -29,5 +29,7 @@
     </orderEntry>
     <orderEntry type="library" name="opencsv-3.7" level="project" />
     <orderEntry type="library" name="commons-lang3-3.4" level="project" />
+    <orderEntry type="library" name="commons-lang3-3.4 (2)" level="project" />
+    <orderEntry type="library" name="opencsv-3.8" level="project" />
   </component>
 </module>
