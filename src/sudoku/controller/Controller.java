@@ -121,8 +121,8 @@ public class Controller implements Observer {
      */
     @Override
     public void update(Observable o, Object arg) {
-        if (arg instanceof SudokuBoard) {
-            SudokuBoard game = (SudokuBoard) arg;
+        if (o instanceof SudokuBoard) {
+            SudokuBoard game = (SudokuBoard) o;
             for (int row = 0; row < game.getSize(); row++) {
                 for (int col = 0; col < game.getSize(); col++) {
                     int value = game.getValue(row, col);

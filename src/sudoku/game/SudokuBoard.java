@@ -73,7 +73,7 @@ public class SudokuBoard extends Observable {
             }
             board[rowIndex][colIndex] = valIndex;
             setChanged();
-            notifyObservers(board);
+            notifyObservers();
             return true;
         } else {
             return false;
@@ -204,10 +204,10 @@ public class SudokuBoard extends Observable {
             System.arraycopy(newBoard, 0, board, 0, size);
         }
         setChanged();
-        notifyObservers(board);
+        notifyObservers();
     }
 
-    public void setBoard(int[][] board) {
+    public void setBoard(int[][] board) { // TODO handle initial positions!
         // board is final
         for (int row = 0; row < SIZE; row++) {
             for (int col = 0; col < SIZE; col++) {
@@ -215,7 +215,6 @@ public class SudokuBoard extends Observable {
             }
         }
         setChanged();
-        notifyObservers(board);
+        notifyObservers();
     }
 }
-//TODO delete superfluous methods
