@@ -1,10 +1,15 @@
 package sudoku.controller;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToolBar;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import sudoku.controller.csvIO.CSVInput;
@@ -20,16 +25,18 @@ import java.util.Observable;
 import java.util.Observer;
 
 public class Controller implements Observer {
+    private static final int TF_SIZE = 56;
     private final double EASY = 0.5;
     private final double HARD = 0.2;
     private static final int SIZE = 9;
     private final Stage primaryStage;
     private final SudokuBoard currentGame;
     private File initialState;
-    private final TextField[][] textFields = new TextField[SIZE][SIZE];
-    private final Label[][] labels = new Label[SIZE][SIZE];
+    private final Font numberFont = new Font("Comic Sans MS", 30);
+    private final Background whiteBG = new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY));
+    private final Background blueBG = new Background(new BackgroundFill(Color.LIGHTBLUE, CornerRadii.EMPTY, Insets.EMPTY));
+    @FXML
     public VBox mainVBox;
-
     @FXML
     public Button Solve;
     @FXML
@@ -49,7 +56,7 @@ public class Controller implements Observer {
         try {
             Path gamesaves = Paths.get("gamesaves");
             Files.createDirectories(gamesaves);
-            initialState = new File(gamesaves.toString() + "/initialState.csv");
+            initialState = new File(gamesaves.toString() + "/initialState.csv"); // no toString()
         } catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error Dialog");
@@ -61,22 +68,10 @@ public class Controller implements Observer {
 
     @FXML
     public void initialize() {
+
+        this.update(null, currentGame);
+
         currentGame.addObserver(this);
-
-        mainGridpane.setMaxWidth(1100);
-        mainGridpane.setMinWidth(1000);
-        mainGridpane.setMaxHeight(800);
-        mainGridpane.setMinHeight(700);
-
-        for (int row = 0; row < SIZE; row++) {
-            for (int col = 0; col < SIZE; col++) {
-                labels[row][col] = new Label("");
-                labels[row][col].setVisible(false);
-                textFields[row][col] = new TextField("");
-                // textFields[row][col].setVisible(false);
-                mainGridpane.add(textFields[row][col], row, col);
-            }
-        }
     }
 
     public void loadCSVFile() {
@@ -126,13 +121,23 @@ public class Controller implements Observer {
      */
     @Override
     public void update(Observable o, Object arg) {
-        System.out.println("board changed!");
-        if (arg instanceof int[][]) {
-            int[][] board = (int[][]) arg;
-            for (int row = 0; row < SIZE; row++) {
-                for (int col = 0; col < SIZE; col++) {
-                    labels[row][col].setText(board[row][col] + "");
-                    textFields[row][col].setText(board[row][col] + "");
+        if (arg instanceof SudokuBoard) {
+            SudokuBoard game = (SudokuBoard) arg;
+            for (int row = 0; row < game.getSize(); row++) {
+                for (int col = 0; col < game.getSize(); col++) {
+                    int value = game.getValue(row, col);
+                    TextField textField = new TextField(value == 0 ? "" : "" + value);
+                    textField.setAlignment(Pos.CENTER);
+                    textField.setMaxSize(TF_SIZE, TF_SIZE);
+                    textField.setMinSize(TF_SIZE, TF_SIZE);
+                    textField.setFont(numberFont);
+                    mainGridpane.add(textField, row, col);
+                    if (game.isInitial(row, col)) {
+                        textField.setBackground(blueBG);
+                        textField.setEditable(false);
+                    } else {
+                        textField.setBackground(whiteBG);
+                    }
                 }
             }
         }
