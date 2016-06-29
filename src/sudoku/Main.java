@@ -10,8 +10,8 @@ import sudoku.game.SudokuBoard;
 
 public class Main extends Application {
 
-    private static final int WIDTH = 720;
-    private static final int HEIGHT = 1080;
+    private static final int WIDTH = 810;
+    private static final int HEIGHT = 720;
     private static SudokuBoard game;
 
     @Override
@@ -21,9 +21,7 @@ public class Main extends Application {
         Parent root = loader.load();
         Scene scene = new Scene(root, WIDTH, HEIGHT);
         setUserAgentStylesheet(STYLESHEET_MODENA);
-        scene.getStylesheets()
-                .add(getClass().getResource("view/sample.css")
-                        .toExternalForm());
+        primaryStage.setResizable(false);
         primaryStage.setTitle("Sudoku");
         primaryStage.setScene(scene);
         primaryStage.show();
