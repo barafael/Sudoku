@@ -106,35 +106,23 @@ public class SudokuGame extends Observable {
      * @param col index of a col in the square
      * @return true if val present in specified square.
      */
-    public boolean squareContains(final int row, final int col, final int val) {
+    public boolean squareContains(final int row, final int col, final int value) {
         if (row < SIZE && row >= 0 &&
                 col < SIZE && row >= 0 &&
-                val <= SIZE && val > 0) {
-            return squareContainsHelper(row / 3, col / 3, val);
-        } else return false;
-    }
+                value <= SIZE && value >/*=*/ 0) {
+            int squareRowIndex = row / 3;
+            int squareColIndex = col / 3;
 
-    /**
-     * Returns if the specified square contains the given value.
-     *
-     * @param squareRowIndex index of the row the square starts on divided by sqrt(SIZE)
-     *                       I.e., to get to the middle row in a sudoku of 9,
-     *                       squareRowIndex would be 1
-     * @param squareColIndex index of the column the square starts on divided by sqrt(SIZE)
-     *                       I.e., to get to the first column in a sudoku of 9,
-     *                       squareColIndex would be 0
-     * @return true if value present in specified square.
-     */
-    private boolean squareContainsHelper(final int squareRowIndex, final int squareColIndex, final int value) {
-        int blockSize = (int) Math.sqrt(SIZE);
-        for (int row = squareRowIndex * blockSize; row < squareRowIndex * blockSize + blockSize; row++) {
-            for (int col = squareColIndex * blockSize; col < squareColIndex * blockSize + blockSize; col++) {
-                if (board[row][col] == value) {
-                    return true;
+            int blockSize = (int) Math.sqrt(SIZE);
+            for (int rowIndex = squareRowIndex * blockSize; rowIndex < squareRowIndex * blockSize + blockSize; rowIndex++) {
+                for (int colIndex = squareColIndex * blockSize; squareColIndex < squareColIndex * blockSize + blockSize; colIndex++) {
+                    if (board[rowIndex][colIndex] == value) {
+                        return true;
+                    }
                 }
             }
-        }
-        return false;
+            return false;
+        } else return false;
     }
 
     private static boolean isPerfectSquare(int number) {
@@ -257,7 +245,7 @@ public class SudokuGame extends Observable {
     public void reset() {
         for (int row = 0; row < SIZE; row++) {
             for (int col = 0; col < SIZE; col++) {
-                if(!isInitial(row, col)) {
+                if (!isInitial(row, col)) {
                     board[row][col] = 0;
                 }
             }
