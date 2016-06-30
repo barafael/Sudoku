@@ -1,7 +1,5 @@
 package sudoku.game;
 
-import sudoku.game.generator.InitialStateGenerator;
-
 import java.util.Observable;
 
 /**
@@ -236,17 +234,6 @@ public class SudokuGame extends Observable {
         return value == 0 ||
                 (!rowContains(row, value) && !colContains(col, value) &&
                         !squareContains(row, col, value));
-    }
-    public void newGeneratedGame(int size) {
-        int[][] newBoard = InitialStateGenerator.generateInitialState(0.3, size);
-        for (int rowIndex = 0; rowIndex < size; rowIndex++) {
-            System.arraycopy(newBoard, 0, board, 0, size);
-            System.arraycopy(newBoard, 0, initial, 0, size);
-        }
-        System.out.println("just generated:");
-        System.out.println(this);
-        setChanged();
-        notifyObservers();
     }
 
     public boolean isSolved() {
