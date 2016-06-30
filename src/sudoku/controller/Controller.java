@@ -60,7 +60,7 @@ public class Controller implements Observer {
             Path gamesaves = Paths.get("gamesaves");
             Files.createDirectories(gamesaves);
             initialState = new File(gamesaves + "/initialState.csv");
-            CSVOutput.writeCSV(game, initialState);
+            CSVOutput.saveCSV(game, initialState);
         } catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error Dialog");
@@ -130,7 +130,7 @@ public class Controller implements Observer {
         File selectedFile = fileChooser.showOpenDialog(primaryStage);
         if (selectedFile != null) {
             newGame(CSVInput.loadCSV(selectedFile));
-            CSVOutput.writeCSV(game, initialState);
+            CSVOutput.saveCSV(game, initialState);
         }
     }
 
@@ -143,7 +143,7 @@ public class Controller implements Observer {
                 new FileChooser.ExtensionFilter("All Files", "*.*"));
         File selectedFile = fileChooser.showSaveDialog(primaryStage);
         if (selectedFile != null) {
-            CSVOutput.writeCSV(game, selectedFile);
+            CSVOutput.saveCSV(game, selectedFile);
         }
     }
 
@@ -156,7 +156,7 @@ public class Controller implements Observer {
         game = new SudokuGame(initial);
         game.addObserver(this);
         update(game, null);
-        CSVOutput.writeCSV(game, initialState);
+        CSVOutput.saveCSV(game, initialState);
     }
 
     public void restartGame() {
