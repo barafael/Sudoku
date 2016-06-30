@@ -2,7 +2,6 @@ package sudoku.controller.csvIO;
 
 import com.opencsv.CSVReader;
 import javafx.scene.control.Alert;
-import sudoku.game.SudokuGame;
 
 import java.io.File;
 import java.io.FileReader;
@@ -17,12 +16,11 @@ public class CSVInput {
      *
      * @param file CSV file containing all entries, directly mapped to a sudoku field
      */
-    public static void loadCSV(File file, SudokuGame board) {
+    public static int[][] loadCSV(File file) {
         try (CSVReader csvReader = new CSVReader(new FileReader(file), ';')) {
-            List<String[]> lines = csvReader.readAll();
-            List<Integer[]> rows = parseStringLines(lines);
+            List<Integer[]> rows = parseStringLines(csvReader.readAll());
             int size = checkDimensions(rows);
-            if (csvValidate(size, rows)) {
+            if (isValidCSV(size, rows)) {
                 int[][] newBoard = new int[size][size];
                 for (int rowIndex = 0; rowIndex < size; rowIndex++) {
                     Integer[] row = rows.get(rowIndex);
@@ -30,7 +28,7 @@ public class CSVInput {
                         newBoard[rowIndex][colIndex] = row[colIndex];
                     }
                 }
-                board.arr2game(newBoard);
+                return newBoard;
             }
         } catch (NumberFormatException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -45,17 +43,18 @@ public class CSVInput {
             alert.setContentText("There was an error during opening of the file you requested.");
             alert.showAndWait();
         }
+        return null;
     }
 
     private static int checkDimensions(List<Integer[]> rows) {
         int length = rows.get(0).length;
         boolean correct = true;
-        for (Integer[] integers: rows) {
+        for (Integer[] integers : rows) {
             if (integers.length != length) {
                 correct = false;
             }
         }
-        if(rows.size() != length) { // not square
+        if (rows.size() != length) { // not square
             correct = false;
         }
         return correct ? length : 0;
@@ -73,9 +72,10 @@ public class CSVInput {
         return rows;
     }
 
-    private static boolean csvValidate(int size, List<Integer[]> rows) {
+    private static boolean isValidCSV(int size, List<Integer[]> rows) {
         boolean correctLength = rows.stream().allMatch(intArr -> intArr.length == size);
-        boolean correctRange = rows.stream().allMatch(ints -> Arrays.stream(ints).allMatch(i -> (i >= 0) && (i <= size)));
+        boolean correctRange = rows.stream().allMatch(ints ->
+                Arrays.stream(ints).allMatch(i -> (i >= 0) && (i <= size)));
         return correctLength && correctRange;
     }
 }
