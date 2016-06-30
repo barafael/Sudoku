@@ -8,9 +8,9 @@
    <children>
        <ToolBar fx:id="toolbar" prefHeight="40.0" prefWidth="720.0">
           <items>
-              <Button id="button" fx:id="New" mnemonicParsing="false" onAction="#newGame" text="New" />
-              <Button fx:id="Restart" mnemonicParsing="false" onAction="#restartGame" text="Restart" />
-              <Button fx:id="Solve" mnemonicParsing="false" text="Solve" />
+              <Button id="button" fx:id="newGame" mnemonicParsing="false" onAction="#newGame" text="New" />
+              <Button fx:id="restart" mnemonicParsing="false" onAction="#restartGame" text="Restart" />
+              <Button fx:id="solve" mnemonicParsing="false" text="Solve" onAction="#solveGame"/>
               <Pane HBox.hgrow="ALWAYS" />
               <Button fx:id="csvLoadButton" mnemonicParsing="false" onAction="#loadCSVFile" text="Load CSV File" />
               <Button fx:id="csvWriteButton" mnemonicParsing="false" onAction="#writeCSVFile" text="Write CSV File" />

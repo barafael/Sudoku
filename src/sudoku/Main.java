@@ -6,18 +6,16 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import sudoku.controller.Controller;
-import sudoku.game.SudokuBoard;
 
 public class Main extends Application {
 
     private static final int WIDTH = 810;
     private static final int HEIGHT = 720;
-    private static SudokuBoard game;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("view/sudoku.fxml"));
-        loader.setControllerFactory(c -> new Controller(primaryStage, game));
+        loader.setControllerFactory(c -> new Controller(primaryStage));
         Parent root = loader.load();
         Scene scene = new Scene(root, WIDTH, HEIGHT);
         setUserAgentStylesheet(STYLESHEET_MODENA);
@@ -28,7 +26,6 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        game = new SudokuBoard();
         launch(args);
     }
 }
