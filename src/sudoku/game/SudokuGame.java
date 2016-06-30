@@ -78,7 +78,11 @@ public class SudokuGame extends Observable {
      * @return true if column at colIndex contains value.
      */
     public boolean colContains(final int colIndex, final int value) {
-        for (int rowIndex = 0; rowIndex < SIZE; rowIndex++) {
+        return colContains(board, SIZE, colIndex, value);
+    }
+
+    public static boolean colContains(final int[][] board, int size, final int colIndex, final int value) {
+        for (int rowIndex = 0; rowIndex < size; rowIndex++) {
             if (board[rowIndex][colIndex] == value)
                 return true;
         }
@@ -92,7 +96,11 @@ public class SudokuGame extends Observable {
      * @return true if row at rowIndex contains value.
      */
     public boolean rowContains(final int rowIndex, final int value) {
-        for (int colIndex = 0; colIndex < SIZE; colIndex++) {
+        return rowContains(board, SIZE, rowIndex, value);
+    }
+
+    public static boolean rowContains(final int[][] board, int size, final int rowIndex, final int value) {
+        for (int colIndex = 0; colIndex < size; colIndex++) {
             if (board[rowIndex][colIndex] == value)
                 return true;
         }
@@ -107,15 +115,20 @@ public class SudokuGame extends Observable {
      * @return true if val present in specified square.
      */
     public boolean squareContains(final int row, final int col, final int value) {
-        if (row < SIZE && row >= 0 &&
-                col < SIZE && row >= 0 &&
-                value <= SIZE && value >/*=*/ 0) {
+        return squareContains(board, SIZE, row, col, value);
+    }
+
+    public static boolean squareContains(int[][] board, int size, int row, int col, int value) {
+        if (row < size && row >= 0 &&
+                col < size && row >= 0 &&
+                value <= size && value >/*=*/ 0) {
             int squareRowIndex = row / 3;
             int squareColIndex = col / 3;
 
-            int blockSize = (int) Math.sqrt(SIZE);
+            int blockSize = (int) Math.sqrt(size);
             for (int rowIndex = squareRowIndex * blockSize; rowIndex < squareRowIndex * blockSize + blockSize; rowIndex++) {
-                for (int colIndex = squareColIndex * blockSize; squareColIndex < squareColIndex * blockSize + blockSize; colIndex++) {
+                for (int colIndex = squareColIndex * blockSize; colIndex < squareColIndex * blockSize + blockSize;
+                     colIndex++) {
                     if (board[rowIndex][colIndex] == value) {
                         return true;
                     }
