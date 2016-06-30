@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import sudoku.controller.csvIO.CSVInput;
 import sudoku.controller.csvIO.CSVOutput;
 import sudoku.game.SudokuBoard;
+import sudoku.game.generator.InitialStateGenerator;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,24 +26,27 @@ import java.util.Observable;
 import java.util.Observer;
 
 public class Controller implements Observer {
-    private static final int TF_SIZE = 56;
+    private static final int SIZE = 9;
     private final double EASY = 0.5;
     private final double HARD = 0.2;
-    private static final int SIZE = 9;
+
+    private final SudokuBoard game;
     private final Stage primaryStage;
-    private final SudokuBoard currentGame;
     private File initialState;
+
     private final Font numberFont = new Font("Comic Sans MS", 30);
     private final Background whiteBG = new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY));
-    private final Background blueBG = new Background(new BackgroundFill(Color.LIGHTBLUE, CornerRadii.EMPTY, Insets.EMPTY));
+    private final Background blueBG = new Background(new BackgroundFill(Color.BISQUE, CornerRadii.EMPTY, Insets.EMPTY));
+    private static final int TEXTFIELD_SIZE = 58;
+
     @FXML
     public VBox mainVBox;
     @FXML
-    public Button Solve;
+    public Button solve;
     @FXML
-    public Button New;
+    public Button newGame;
     @FXML
-    public Button Restart;
+    public Button restart;
     @FXML
     public ToolBar toolbar;
     @FXML
@@ -50,13 +54,14 @@ public class Controller implements Observer {
     @FXML
     public GridPane mainGridpane;
 
-    public Controller(Stage primaryStage, SudokuBoard game) {
+    public Controller(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        currentGame = game;
+        game = new SudokuBoard(InitialStateGenerator.generateInitialState(HARD, SIZE));
         try {
             Path gamesaves = Paths.get("gamesaves");
             Files.createDirectories(gamesaves);
             initialState = new File(gamesaves.toString() + "/initialState.csv"); // no toString()
+            CSVOutput.writeCSV(game, initialState);
         } catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error Dialog");
@@ -68,10 +73,38 @@ public class Controller implements Observer {
 
     @FXML
     public void initialize() {
+        for (int row = 0; row < game.getSize(); row++) {
+            for (int col = 0; col < game.getSize(); col++) {
+                TextField textField = new TextField("");
+                limitNumberField(textField);
+                textField.setAlignment(Pos.CENTER);
+                textField.setMaxSize(TEXTFIELD_SIZE, TEXTFIELD_SIZE);
+                textField.setMinSize(TEXTFIELD_SIZE, TEXTFIELD_SIZE);
+                textField.setFont(numberFont);
+                mainGridpane.add(textField, col, row);
+                if (game.isInitial(row, col)) {
+                    textField.setBackground(blueBG);
+                    textField.setEditable(false);
+                } else {
+                    textField.setBackground(whiteBG);
+                }
+            }
+        }
+        game.addObserver(this);
+        this.update(game, null);
+    }
 
-        this.update(null, currentGame);
+    private static void limitNumberField(TextField textField) {
+        textField.textProperty().addListener((observableValue, oldValue, newValue) -> {
+            String text = textField.getText();
+            if (!text.matches("\\d*")) {
+                textField.setText("");
+            }
+        });
+    }
 
-        currentGame.addObserver(this);
+    public void solveGame() {
+        game.solve();
     }
 
     public void loadCSVFile() {
@@ -83,8 +116,8 @@ public class Controller implements Observer {
                 new FileChooser.ExtensionFilter("All Files", "*.*"));
         File selectedFile = fileChooser.showOpenDialog(primaryStage);
         if (selectedFile != null) {
-            CSVInput.loadCSV(selectedFile, currentGame);
-            CSVOutput.writeCSV(currentGame, initialState);
+            CSVInput.loadCSV(selectedFile, game);
+            CSVOutput.writeCSV(game, initialState);
         }
     }
 
@@ -97,17 +130,17 @@ public class Controller implements Observer {
                 new FileChooser.ExtensionFilter("All Files", "*.*"));
         File selectedFile = fileChooser.showSaveDialog(primaryStage);
         if (selectedFile != null) {
-            CSVOutput.writeCSV(currentGame, selectedFile);
+            CSVOutput.writeCSV(game, selectedFile);
         }
     }
 
     public void newGame() {
-        currentGame.newGame(SIZE);
-        CSVOutput.writeCSV(currentGame, initialState);
+        game.newGeneratedGame(SIZE);
+        CSVOutput.writeCSV(game, initialState);
     }
 
     public void restartGame() {
-        CSVInput.loadCSV(initialState, currentGame);
+        CSVInput.loadCSV(initialState, game);
     }
 
     /**
@@ -128,10 +161,10 @@ public class Controller implements Observer {
                     int value = game.getValue(row, col);
                     TextField textField = new TextField(value == 0 ? "" : "" + value);
                     textField.setAlignment(Pos.CENTER);
-                    textField.setMaxSize(TF_SIZE, TF_SIZE);
-                    textField.setMinSize(TF_SIZE, TF_SIZE);
+                    textField.setMaxSize(TEXTFIELD_SIZE, TEXTFIELD_SIZE);
+                    textField.setMinSize(TEXTFIELD_SIZE, TEXTFIELD_SIZE);
                     textField.setFont(numberFont);
-                    mainGridpane.add(textField, row, col);
+                    mainGridpane.add(textField, col, row);
                     if (game.isInitial(row, col)) {
                         textField.setBackground(blueBG);
                         textField.setEditable(false);
