@@ -20,7 +20,7 @@ public class CSVOutput {
      */
     public static void writeCSV(SudokuBoard game, File file) {
         try {
-            Files.write(file.toPath(), game.toString().getBytes());
+            Files.write(file.toPath(), game.toCSV().getBytes());
         } catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error Dialog");
