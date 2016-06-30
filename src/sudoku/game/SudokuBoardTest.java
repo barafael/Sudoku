@@ -79,4 +79,13 @@ public class SudokuBoardTest {
         assert!method.invoke(game, 10).equals(true);
         assert method.invoke(game, 81).equals(true);
     }
+
+    @org.junit.Test
+    public void getBoard() throws Exception {
+        SudokuBoard newBoard = new SudokuBoard(game.getBoard());
+        assert newBoard.toCSV().equals(game.toCSV());
+        // assert that there is no write through
+        game.setValue(1, 1, 5);
+        assert !newBoard.toCSV().equals(game.toCSV());
+    }
 }
