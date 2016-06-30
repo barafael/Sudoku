@@ -156,7 +156,7 @@ public class SudokuGame extends Observable {
             for (int colIndex = 0; colIndex < SIZE - 1; colIndex++) { // all but last, ';' each
                 stringBuilder.append(board[rowIndex][colIndex]).append(";");
             }
-            stringBuilder.append(board[rowIndex][SIZE - 1]); // no ';' for last
+            stringBuilder.append(board[rowIndex][SIZE - 1]).append('\n'); // no ';' for last
         }
         return stringBuilder.toString();
     }
