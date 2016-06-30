@@ -6,7 +6,7 @@
       prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="sudoku.controller.Controller">
     <ToolBar fx:id="toolbar" prefHeight="40.0" prefWidth="720.0">
-        <Button id="button" fx:id="newGameButton" mnemonicParsing="false" onAction="#newGame" text="New"/>
+        <Button id="button" fx:id="newGameButton" mnemonicParsing="false" onAction="#newRandomGame" text="New"/>
         <Button fx:id="restartButton" mnemonicParsing="false" onAction="#restartGame" text="Restart"/>
         <Button fx:id="solveButton" mnemonicParsing="false" onAction="#solveGame" text="Solve"/>
         <Button fx:id="printModelButton" mnemonicParsing="false" onAction="#printModel" text="Print model"/>
