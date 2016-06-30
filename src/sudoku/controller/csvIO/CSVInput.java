@@ -18,7 +18,7 @@ public class CSVInput {
      */
     public static int[][] loadCSV(File file) {
         try (CSVReader csvReader = new CSVReader(new FileReader(file), ';')) {
-            List<Integer[]> rows = parseStringLines(csvReader.readAll());
+            List<Integer[]> rows = strings2Integers(csvReader.readAll());
             int size = checkDimensions(rows);
             if (isValidCSV(size, rows)) {
                 int[][] newBoard = new int[size][size];
@@ -60,7 +60,7 @@ public class CSVInput {
         return correct ? length : 0;
     }
 
-    private static List<Integer[]> parseStringLines(List<String[]> lines) throws NumberFormatException {
+    private static List<Integer[]> strings2Integers(List<String[]> lines) throws NumberFormatException {
         List<Integer[]> rows = new ArrayList<>(lines.size());
         for (String[] strings : lines) {
             Integer[] row = new Integer[strings.length];

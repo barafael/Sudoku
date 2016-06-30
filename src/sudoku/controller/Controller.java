@@ -74,12 +74,12 @@ public class Controller implements Observer {
     public void initialize() {
         for (int row = 0; row < game.getSize(); row++) {
             for (int col = 0; col < game.getSize(); col++) {
-                TextField textField = new TextField("");
-                limitNumberField(textField);
+                TextField textField = new TextField();
                 textField.setAlignment(Pos.CENTER);
                 textField.setMaxSize(TEXTFIELD_SIZE, TEXTFIELD_SIZE);
                 textField.setMinSize(TEXTFIELD_SIZE, TEXTFIELD_SIZE);
                 textField.setStyle("-fx-font-family: Cairo; -fx-font-size: 30;");
+                limitNumberField(textField);
                 textField.setOnKeyTyped(event -> {
                     TextField source = (TextField) event.getSource();
                     int tf_row = GridPane.getRowIndex(source);
@@ -87,13 +87,6 @@ public class Controller implements Observer {
                     updateModel(event.getCharacter(), tf_row, tf_col);
                 });
                 mainGridpane.add(textField, col, row);
-                if (game.isInitial(row, col)) {
-                    textField.setBackground(blueBG);
-                    textField.setEditable(false);
-                } else {
-                    textField.setBackground(whiteBG);
-                    textField.setEditable(true);
-                }
                 textFields[row][col] = textField;
             }
         }
@@ -101,10 +94,10 @@ public class Controller implements Observer {
         this.update(game, null);
     }
 
-    private void updateModel(String entered, int tf_row, int tf_col) {
+    private void updateModel(String entered, int row, int col) {
         try {
             int newVal = Integer.parseInt(entered);
-            game.setValue(tf_row, tf_col, newVal);
+            game.setValue(row, col, newVal);
         } catch (NumberFormatException ignored) {
             // ignore because textfield resets text to empty string if input not a number
         }
@@ -136,7 +129,7 @@ public class Controller implements Observer {
                 new FileChooser.ExtensionFilter("All Files", "*.*"));
         File selectedFile = fileChooser.showOpenDialog(primaryStage);
         if (selectedFile != null) {
-            CSVInput.loadCSV(selectedFile, game);
+            newGame(CSVInput.loadCSV(selectedFile));
             CSVOutput.writeCSV(game, initialState);
         }
     }
@@ -154,9 +147,13 @@ public class Controller implements Observer {
         }
     }
 
-    public void newGame() {
+    public void newRandomGame() {
+        newGame(InitialStateGenerator.generateInitialState(EASY, SIZE));
+    }
+
+    public void newGame(int[][] initial) {
         game.deleteObserver(this);
-        game = new SudokuGame(InitialStateGenerator.generateInitialState(EASY, SIZE));
+        game = new SudokuGame(initial);
         game.addObserver(this);
         update(game, null);
         CSVOutput.writeCSV(game, initialState);
