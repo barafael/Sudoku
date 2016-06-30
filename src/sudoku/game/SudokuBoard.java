@@ -2,7 +2,6 @@ package sudoku.game;
 
 import sudoku.game.generator.InitialStateGenerator;
 
-import java.util.Arrays;
 import java.util.Observable;
 
 /**
@@ -16,29 +15,10 @@ public class SudokuBoard extends Observable {
     private static final int SIZE = 9;
 
     private final int[][] board = new int[SIZE][SIZE]; // all arrays initialized with 0
-    private final int[][] initial;
+    private final int[][] initial = new int[SIZE][SIZE];
 
     public SudokuBoard(int[][] initialState) {
-        if (initialState.length == SIZE && initialState[0].length == SIZE && correctRange(initialState)) {
-            initial = initialState;
-            for (int rowIndex = 0; rowIndex < SIZE; rowIndex++) { // initialize board as well
-                System.arraycopy(initial[rowIndex], 0, board[rowIndex], 0, SIZE);
-            }
-        } else {
-            initial = new int[SIZE][SIZE]; // board can stay at 0
-        }
-        assert isPerfectSquare(SIZE);
-    }
-
-    public SudokuBoard() {
-        initial = new int[SIZE][SIZE];
-        assert isPerfectSquare(SIZE);
-    }
-
-    private static boolean correctRange(int[][] array) {
-        return Arrays.stream(array).allMatch(
-                integers -> Arrays.stream(integers).allMatch(
-                        i -> i >= 0 && i <= SIZE));
+        arr2game(initialState);
     }
 
     public int getValue(int rowIndex, int colIndex) {
@@ -59,19 +39,19 @@ public class SudokuBoard extends Observable {
      *
      * @param rowIndex valid board index
      * @param colIndex valid board index
-     * @param valIndex valid number between 1 and (including) SIZE.
+     * @param value    valid number between 1 and (including) SIZE.
      * @return false if invalid args, true otherwise.
      */
-    public boolean setValue(int rowIndex, int colIndex, int valIndex) {
+    public boolean setValue(int rowIndex, int colIndex, int value) {
         if (rowIndex < SIZE && rowIndex >= 0 &&
                 colIndex < SIZE && colIndex >= 0 &&
-                valIndex <= SIZE && valIndex >= 0) { // valid arguments?
+                value <= SIZE && value >= 0) { // valid arguments?
 
             if (initial[rowIndex][colIndex] != 0) {
                 System.err.println("write on initial position!");
                 return false;
             }
-            board[rowIndex][colIndex] = valIndex;
+            board[rowIndex][colIndex] = value;
             setChanged();
             notifyObservers();
             return true;
@@ -183,7 +163,7 @@ public class SudokuBoard extends Observable {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < 9; ++i) {
             if (i % 3 == 0)
-                stringBuilder.append(" -----------------------\n");
+                stringBuilder.append(" –––––––––––––––––––––––\n");
             for (int j = 0; j < 9; ++j) {
                 if (j % 3 == 0) stringBuilder.append("| ");
                 stringBuilder.append(board[i][j] == 0
@@ -194,27 +174,92 @@ public class SudokuBoard extends Observable {
             }
             stringBuilder.append("|\n");
         }
-        stringBuilder.append(" -----------------------\n");
+        stringBuilder.append(" –––––––––––––––––––––––\n");
         return stringBuilder.toString();
     }
 
-    public void newGame(int size) {
-        int[][] newBoard = InitialStateGenerator.generateInitialState(size);
-        for (int rowIndex = 0; rowIndex < size; rowIndex++) {
-            System.arraycopy(newBoard, 0, board, 0, size);
-        }
-        setChanged();
-        notifyObservers();
-    }
-
-    public void setBoard(int[][] board) { // TODO handle initial positions!
-        // board is final
-        for (int row = 0; row < SIZE; row++) {
-            for (int col = 0; col < SIZE; col++) {
-                board[row][col] = board[row][col];
+    public void arr2game(int[][] initial) {
+        if (isPerfectSquare(initial.length) && isPerfectSquare(initial[0].length) &&
+                initial.length == initial[0].length &&
+                initial.length == SIZE) {
+            for (int row = 0; row < SIZE; row++) {
+                for (int col = 0; col < SIZE; col++) {
+                    this.board[row][col] = 0;
+                    this.initial[row][col] = 0;
+                    if (initial[row][col] != 0) {
+                        this.initial[row][col] = initial[row][col];
+                        this.board[row][col] = initial[row][col];
+                    }
+                }
             }
         }
         setChanged();
         notifyObservers();
+    }
+
+    public boolean solve() {
+        if (solve(0, 0)) {
+            setChanged();
+            notifyObservers();
+            return true;
+        } else
+            return false; // are manual entries overwritten?
+    }
+
+    private boolean solve(int row, int col) {
+        if (row == SIZE) {
+            row = 0;
+            if (++col == SIZE)
+                return true;
+        }
+        if (isInitial(row, col))
+            return solve(row + 1, col);
+
+        for (int val = 1; val <= SIZE; ++val) {
+            if (validPosition(row, col, val)) {
+                board[row][col] = val;
+                if (solve(row + 1, col))
+                    return true;
+            }
+        }
+
+        board[row][col] = 0;
+        return false;
+
+    }
+
+    private boolean validPosition(int row, int col, int value) {
+        return value == 0 ||
+                (!rowContains(row, value) && !colContains(col, value) &&
+                        !squareContains(row, col, value));
+    }
+
+    public void newGeneratedGame(int size) {
+        int[][] newBoard = InitialStateGenerator.generateInitialState(0.3, size);
+        for (int rowIndex = 0; rowIndex < size; rowIndex++) {
+            System.arraycopy(newBoard, 0, board, 0, size);
+            System.arraycopy(newBoard, 0, initial, 0, size);
+        }
+        System.out.println("just generated:");
+        System.out.println(this);
+        setChanged();
+        notifyObservers();
+    }
+    public boolean isSolved() {
+        for (int row = 0; row < SIZE; row++) {
+            for (int col = 0; col < SIZE; col++) {
+                if(!validPosition(row, col, board[row][col]))
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    public int[][] getBoard() {
+        int[][] arr = new int[SIZE][SIZE];
+        for (int rowIndex = 0; rowIndex < SIZE; rowIndex++) {
+            System.arraycopy(board, 0, arr, 0, SIZE);
+        }
+        return arr;
     }
 }
