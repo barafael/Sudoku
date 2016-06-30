@@ -1,6 +1,5 @@
 package sudoku.controller;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -31,7 +30,7 @@ public class Controller implements Observer {
     private final double EASY = 0.5;
     private final double HARD = 0.2;
 
-    private final SudokuGame game;
+    private SudokuGame game;
     private final Stage primaryStage;
     private File initialState;
 
@@ -158,12 +157,15 @@ public class Controller implements Observer {
     }
 
     public void newGame() {
-        game.newGeneratedGame(SIZE);
+        game.deleteObserver(this);
+        game = new SudokuGame(InitialStateGenerator.generateInitialState(EASY, SIZE));
+        game.addObserver(this);
+        update(game, null);
         CSVOutput.writeCSV(game, initialState);
     }
 
     public void restartGame() {
-        CSVInput.loadCSV(initialState, game);
+        game.reset();
     }
 
     /**
@@ -195,9 +197,9 @@ public class Controller implements Observer {
         }
     }
 
-    public void printModel(ActionEvent actionEvent) {
+    public void printModel() {
         System.out.println(game);
     }
 }
-// TODO problem: solver in game, thats not good
+// TODO problem: solver in game, that's not good
 // TODO problem: pass coordinates to update method?
