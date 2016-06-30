@@ -9,7 +9,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import sudoku.controller.csvIO.CSVInput;
@@ -35,7 +34,6 @@ public class Controller implements Observer {
     private File initialState;
 
     private final TextField[][] textFields = new TextField[SIZE][SIZE];
-    private final Font numberFont = new Font("Comic Sans MS", 30);
     private final Background whiteBG = new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY));
     private final Background blueBG = new Background(new BackgroundFill(Color.BISQUE, CornerRadii.EMPTY, Insets.EMPTY));
 
@@ -61,7 +59,7 @@ public class Controller implements Observer {
         try {
             Path gamesaves = Paths.get("gamesaves");
             Files.createDirectories(gamesaves);
-            initialState = new File(gamesaves.toString() + "/initialState.csv"); // no toString()
+            initialState = new File(gamesaves + "/initialState.csv");
             CSVOutput.writeCSV(game, initialState);
         } catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -81,7 +79,7 @@ public class Controller implements Observer {
                 textField.setAlignment(Pos.CENTER);
                 textField.setMaxSize(TEXTFIELD_SIZE, TEXTFIELD_SIZE);
                 textField.setMinSize(TEXTFIELD_SIZE, TEXTFIELD_SIZE);
-                textField.setFont(numberFont);
+                textField.setStyle("-fx-font-family: Cairo; -fx-font-size: 30;");
                 textField.setOnKeyTyped(event -> {
                     TextField source = (TextField) event.getSource();
                     int tf_row = GridPane.getRowIndex(source);

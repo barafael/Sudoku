@@ -18,6 +18,7 @@ public class Main extends Application {
         loader.setControllerFactory(c -> new Controller(primaryStage));
         Parent root = loader.load();
         Scene scene = new Scene(root, WIDTH, HEIGHT);
+        scene.getStylesheets().add("https://fonts.googleapis.com/css?family=Cairo");
         setUserAgentStylesheet(STYLESHEET_MODENA);
         primaryStage.setResizable(false);
         primaryStage.setTitle("Sudoku");
