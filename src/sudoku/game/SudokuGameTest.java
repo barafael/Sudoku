@@ -7,8 +7,8 @@ import java.util.Arrays;
  * Created by ra on 23.06.16.
  * Part of Sudoku, in package sudoku.game.
  */
-public class SudokuBoardTest {
-    private SudokuBoard game;
+public class SudokuGameTest {
+    private SudokuGame game;
 
     @org.junit.Before
     public void setUp() throws Exception {
@@ -23,7 +23,7 @@ public class SudokuBoardTest {
                 {3, 0, 0, 5, 0, 0, 0, 0, 7},
                 {0, 0, 1, 0, 0, 4, 0, 6, 0},
         };
-        game = new SudokuBoard(initialState);
+        game = new SudokuGame(initialState);
     }
 
     @org.junit.After
@@ -74,7 +74,7 @@ public class SudokuBoardTest {
 
     @org.junit.Test
     public void perfectSquare() throws Exception {
-        Method method = SudokuBoard.class.getDeclaredMethod("isPerfectSquare", Integer.TYPE);
+        Method method = SudokuGame.class.getDeclaredMethod("isPerfectSquare", Integer.TYPE);
         method.setAccessible(true);
         assert!method.invoke(game, 10).equals(true);
         assert method.invoke(game, 81).equals(true);
@@ -82,7 +82,7 @@ public class SudokuBoardTest {
 
     @org.junit.Test
     public void getBoard() throws Exception {
-        SudokuBoard newBoard = new SudokuBoard(game.getBoard());
+        SudokuGame newBoard = new SudokuGame(game.getBoard());
         assert newBoard.toCSV().equals(game.toCSV());
         // assert that there is no write through
         game.setValue(1, 1, 5);

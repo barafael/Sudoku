@@ -1,13 +1,13 @@
 package sudoku.game.solver;
 
-import sudoku.game.SudokuBoard;
+import sudoku.game.SudokuGame;
 
 public class BacktrackSolver {
-    public static boolean solve(SudokuBoard board) {
+    public static boolean solve(SudokuGame board) {
         return solve(board, 0, 0); // start at upper left corner, the rest is recursion
     }
 
-    private static boolean solve(SudokuBoard board, int row, int col) {
+    private static boolean solve(SudokuGame board, int row, int col) {
         int SIZE = board.getSize();
         if (row == SIZE) {
             row = 0;
@@ -29,7 +29,7 @@ public class BacktrackSolver {
         return false;
     }
 
-    private static boolean validPosition(SudokuBoard board, int row, int col, int value) {
+    private static boolean validPosition(SudokuGame board, int row, int col, int value) {
         return value == 0 ||
                 (!board.rowContains(row, value) && !board.colContains(col, value) &&
                         !board.squareContains(row, col, value));

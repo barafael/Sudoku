@@ -1,7 +1,7 @@
 package sudoku.controller.csvIO;
 
 import javafx.scene.control.Alert;
-import sudoku.game.SudokuBoard;
+import sudoku.game.SudokuGame;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +18,7 @@ public class CSVOutput {
      * @param game game field to be filled with csv entries
      * @param file csv file containing all entries, directly mapped to a sudoku field
      */
-    public static void writeCSV(SudokuBoard game, File file) {
+    public static void writeCSV(SudokuGame game, File file) {
         try {
             Files.write(file.toPath(), game.toCSV().getBytes());
         } catch (IOException e) {

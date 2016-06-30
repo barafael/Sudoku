@@ -5,19 +5,24 @@ import sudoku.game.generator.InitialStateGenerator;
 import java.util.Observable;
 
 /**
- * Created by ra on 23.06.16.
- * Part of Sudoku, in package sudoku.game.solver.
+ * The game of Sudoku.
+ * This class provides a model of a sudoku game. The class can be constructed of an initial board.
+ * The entries of the initial board are immutable.
+ * The board array always keeps all entries, even the ones from the initial board, but they are protected.
+ * Since the class inherits from Observable, observers can be added to it.
+ * They are notified whenever an entry in the backing array changes.
  */
-public class SudokuBoard extends Observable {
+public class SudokuGame extends Observable {
     /* Using simple 2-d array. Arrays can hold primitive types, collections cannot.
     Arrays have O(1) indexing and changing values. Size of board is constant.
     */
     private static final int SIZE = 9;
 
-    private final int[][] board = new int[SIZE][SIZE]; // all arrays initialized with 0
+    // all arrays initialized with 0
+    private final int[][] board = new int[SIZE][SIZE];
     private final int[][] initial = new int[SIZE][SIZE];
 
-    public SudokuBoard(int[][] initialState) {
+    public SudokuGame(int[][] initialState) {
         arr2game(initialState);
     }
 
@@ -153,7 +158,7 @@ public class SudokuBoard extends Observable {
             for (int colIndex = 0; colIndex < SIZE - 1; colIndex++) { // all but last, ';' each
                 stringBuilder.append(board[rowIndex][colIndex]).append(";");
             }
-            stringBuilder.append(board[rowIndex][SIZE - 1]).append('\n'); // no ';' for last
+            stringBuilder.append(board[rowIndex][SIZE - 1]); // no ';' for last
         }
         return stringBuilder.toString();
     }
@@ -232,7 +237,6 @@ public class SudokuBoard extends Observable {
                 (!rowContains(row, value) && !colContains(col, value) &&
                         !squareContains(row, col, value));
     }
-
     public void newGeneratedGame(int size) {
         int[][] newBoard = InitialStateGenerator.generateInitialState(0.3, size);
         for (int rowIndex = 0; rowIndex < size; rowIndex++) {
@@ -244,10 +248,11 @@ public class SudokuBoard extends Observable {
         setChanged();
         notifyObservers();
     }
+
     public boolean isSolved() {
         for (int row = 0; row < SIZE; row++) {
             for (int col = 0; col < SIZE; col++) {
-                if(!validPosition(row, col, board[row][col]))
+                if (!validPosition(row, col, board[row][col]))
                     return false;
             }
         }

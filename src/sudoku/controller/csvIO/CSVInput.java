@@ -2,7 +2,7 @@ package sudoku.controller.csvIO;
 
 import com.opencsv.CSVReader;
 import javafx.scene.control.Alert;
-import sudoku.game.SudokuBoard;
+import sudoku.game.SudokuGame;
 
 import java.io.File;
 import java.io.FileReader;
@@ -17,7 +17,7 @@ public class CSVInput {
      *
      * @param file CSV file containing all entries, directly mapped to a sudoku field
      */
-    public static void loadCSV(File file, SudokuBoard board) {
+    public static void loadCSV(File file, SudokuGame board) {
         try (CSVReader csvReader = new CSVReader(new FileReader(file), ';')) {
             List<String[]> lines = csvReader.readAll();
             List<Integer[]> rows = parseStringLines(lines);

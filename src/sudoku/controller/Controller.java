@@ -15,7 +15,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import sudoku.controller.csvIO.CSVInput;
 import sudoku.controller.csvIO.CSVOutput;
-import sudoku.game.SudokuBoard;
+import sudoku.game.SudokuGame;
 import sudoku.game.generator.InitialStateGenerator;
 
 import java.io.File;
@@ -31,7 +31,7 @@ public class Controller implements Observer {
     private final double EASY = 0.5;
     private final double HARD = 0.2;
 
-    private final SudokuBoard game;
+    private final SudokuGame game;
     private final Stage primaryStage;
     private File initialState;
 
@@ -58,7 +58,7 @@ public class Controller implements Observer {
 
     public Controller(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        game = new SudokuBoard(InitialStateGenerator.generateInitialState(HARD, SIZE));
+        game = new SudokuGame(InitialStateGenerator.generateInitialState(HARD, SIZE));
         try {
             Path gamesaves = Paths.get("gamesaves");
             Files.createDirectories(gamesaves);
@@ -177,8 +177,8 @@ public class Controller implements Observer {
      */
     @Override
     public void update(Observable o, Object arg) {
-        if (o instanceof SudokuBoard) {
-            SudokuBoard game = (SudokuBoard) o;
+        if (o instanceof SudokuGame) {
+            SudokuGame game = (SudokuGame) o;
             for (int row = 0; row < game.getSize(); row++) {
                 for (int col = 0; col < game.getSize(); col++) {
                     int value = game.getValue(row, col);

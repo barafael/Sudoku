@@ -1,6 +1,6 @@
 package sudoku.game.generator;
 
-import sudoku.game.SudokuBoard;
+import sudoku.game.SudokuGame;
 import sudoku.game.solver.BacktrackSolver;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ public class InitialStateGenerator {
     private final static Random rng = new Random();
 
     public static int[][] generateInitialState(double difficulty, final int SIZE) {
-        final SudokuBoard board = new SudokuBoard(new int[SIZE][SIZE]); // Empty initial positions
+        final SudokuGame board = new SudokuGame(new int[SIZE][SIZE]); // Empty initial positions
         randomisedSolve(board, 0, 0); // get solved sudoku
         System.out.println("randomised solve:");
         System.out.println(board);
@@ -26,7 +26,7 @@ public class InitialStateGenerator {
         return board.getBoard();
     }
 
-    private static void pruneResult(SudokuBoard board, double difficulty) {
+    private static void pruneResult(SudokuGame board, double difficulty) {
         if (difficulty < 1 && difficulty > 0) {
             int remaining = (int) (board.getSize() * board.getSize() * difficulty);
             int toRemove = board.getSize() * board.getSize() - remaining;
@@ -37,13 +37,13 @@ public class InitialStateGenerator {
         }
     }
 
-    private static boolean tryRemove(SudokuBoard board) {
+    private static boolean tryRemove(SudokuGame board) {
         int row = rng.nextInt(board.getSize());
         int col = rng.nextInt(board.getSize());
         int value = board.getValue(row, col); // != 0?
         board.setValue(row, col, 0);
         // see if board still solvable
-        if (BacktrackSolver.solve(new SudokuBoard(board.getBoard()))) {
+        if (BacktrackSolver.solve(new SudokuGame(board.getBoard()))) {
             return true;
         }
         else {
@@ -60,7 +60,7 @@ public class InitialStateGenerator {
      * @param col
      * @return
      */
-    private static boolean randomisedSolve(SudokuBoard board, int row, int col) {
+    private static boolean randomisedSolve(SudokuGame board, int row, int col) {
         if (row == board.getSize()) {
             row = 0;
             if (++col == board.getSize())
@@ -84,7 +84,7 @@ public class InitialStateGenerator {
         return false;
     }
 
-    private static boolean validPosition(SudokuBoard board, int row, int col, int value) {
+    private static boolean validPosition(SudokuGame board, int row, int col, int value) {
         return value == 0 ||
                 (!board.rowContains(row, value) && !board.colContains(col, value) &&
                         !board.squareContains(row, col, value));
