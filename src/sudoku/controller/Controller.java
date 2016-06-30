@@ -1,5 +1,6 @@
 package sudoku.controller;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -34,19 +35,20 @@ public class Controller implements Observer {
     private final Stage primaryStage;
     private File initialState;
 
+    private final TextField[][] textFields = new TextField[SIZE][SIZE];
     private final Font numberFont = new Font("Comic Sans MS", 30);
     private final Background whiteBG = new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY));
     private final Background blueBG = new Background(new BackgroundFill(Color.BISQUE, CornerRadii.EMPTY, Insets.EMPTY));
-    private static final int TEXTFIELD_SIZE = 58;
 
+    private static final int TEXTFIELD_SIZE = 58;
     @FXML
     public VBox mainVBox;
     @FXML
-    public Button solve;
+    public Button solveButton;
     @FXML
-    public Button newGame;
+    public Button newGameButton;
     @FXML
-    public Button restart;
+    public Button restartButton;
     @FXML
     public ToolBar toolbar;
     @FXML
@@ -81,24 +83,45 @@ public class Controller implements Observer {
                 textField.setMaxSize(TEXTFIELD_SIZE, TEXTFIELD_SIZE);
                 textField.setMinSize(TEXTFIELD_SIZE, TEXTFIELD_SIZE);
                 textField.setFont(numberFont);
+                textField.setOnKeyTyped(event -> {
+                    TextField source = (TextField) event.getSource();
+                    int tf_row = GridPane.getRowIndex(source);
+                    int tf_col = GridPane.getColumnIndex(source);
+                    updateModel(event.getCharacter(), tf_row, tf_col);
+                });
                 mainGridpane.add(textField, col, row);
                 if (game.isInitial(row, col)) {
                     textField.setBackground(blueBG);
                     textField.setEditable(false);
                 } else {
                     textField.setBackground(whiteBG);
+                    textField.setEditable(true);
                 }
+                textFields[row][col] = textField;
             }
         }
         game.addObserver(this);
         this.update(game, null);
     }
 
+    private void updateModel(String entered, int tf_row, int tf_col) {
+        try {
+            int newVal = Integer.parseInt(entered);
+            game.setValue(tf_row, tf_col, newVal);
+        } catch (NumberFormatException ignored) {
+            // ignore because textfield resets text to empty string if input not a number
+        }
+    }
+
     private static void limitNumberField(TextField textField) {
         textField.textProperty().addListener((observableValue, oldValue, newValue) -> {
             String text = textField.getText();
+            // there have to be 2 different checks, otherwise exceptions and weird behaviour occur
             if (!text.matches("\\d*")) {
                 textField.setText("");
+            }
+            if (text.length() > 1) {
+                textField.setText(text.substring(0, 1));
             }
         });
     }
@@ -121,7 +144,7 @@ public class Controller implements Observer {
         }
     }
 
-    public void writeCSVFile() {
+    public void saveCSVFile() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
         fileChooser.getExtensionFilters().addAll(
@@ -159,20 +182,22 @@ public class Controller implements Observer {
             for (int row = 0; row < game.getSize(); row++) {
                 for (int col = 0; col < game.getSize(); col++) {
                     int value = game.getValue(row, col);
-                    TextField textField = new TextField(value == 0 ? "" : "" + value);
-                    textField.setAlignment(Pos.CENTER);
-                    textField.setMaxSize(TEXTFIELD_SIZE, TEXTFIELD_SIZE);
-                    textField.setMinSize(TEXTFIELD_SIZE, TEXTFIELD_SIZE);
-                    textField.setFont(numberFont);
-                    mainGridpane.add(textField, col, row);
+                    textFields[row][col].setText(value == 0 ? "" : value + "");
                     if (game.isInitial(row, col)) {
-                        textField.setBackground(blueBG);
-                        textField.setEditable(false);
+                        textFields[row][col].setBackground(blueBG);
+                        textFields[row][col].setEditable(false);
                     } else {
-                        textField.setBackground(whiteBG);
+                        textFields[row][col].setBackground(whiteBG);
+                        textFields[row][col].setEditable(true);
                     }
                 }
             }
         }
     }
+
+    public void printModel(ActionEvent actionEvent) {
+        System.out.println(game);
+    }
 }
+// TODO problem: solver in game, thats not good
+// TODO problem: pass coordinates to update method?
