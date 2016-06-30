@@ -1,54 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
-<VBox fx:id="mainVBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sudoku.controller.Controller">
-   <children>
-       <ToolBar fx:id="toolbar" prefHeight="40.0" prefWidth="720.0">
-          <items>
-              <Button id="button" fx:id="newGame" mnemonicParsing="false" onAction="#newGame" text="New" />
-              <Button fx:id="restart" mnemonicParsing="false" onAction="#restartGame" text="Restart" />
-              <Button fx:id="solve" mnemonicParsing="false" text="Solve" onAction="#solveGame"/>
-              <Pane HBox.hgrow="ALWAYS" />
-              <Button fx:id="csvLoadButton" mnemonicParsing="false" onAction="#loadCSVFile" text="Load CSV File" />
-              <Button fx:id="csvWriteButton" mnemonicParsing="false" onAction="#writeCSVFile" text="Write CSV File" />
-          </items>
-       </ToolBar>
-       <BorderPane fx:id="mainBorderpane" prefHeight="465.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
-           <center>
-               <GridPane fx:id="mainGridpane" alignment="CENTER" focusTraversable="true" gridLinesVisible="true" BorderPane.alignment="CENTER">
-                   <columnConstraints>
-                       <ColumnConstraints hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="90.0" />
-                       <ColumnConstraints hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="90.0" />
-                       <ColumnConstraints hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="90.0" />
-                       <ColumnConstraints hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="90.0" />
-                       <ColumnConstraints hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="90.0" />
-                       <ColumnConstraints hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="90.0" />
-                       <ColumnConstraints hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="90.0" />
-                       <ColumnConstraints hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="90.0" />
-                       <ColumnConstraints hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="90.0" />
-                   </columnConstraints>
-                   <rowConstraints>
-                       <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES" />
-                       <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES" />
-                       <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES" />
-                       <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES" />
-                       <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES" />
-                       <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES" />
-                       <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES" />
-                       <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES" />
-                       <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES" />
-                   </rowConstraints>
-               </GridPane>
-           </center>
-           <left>
-               <Pane minWidth="30.0" HBox.hgrow="ALWAYS" />
-           </left>
-           <right>
-               <Pane minWidth="30.0" HBox.hgrow="ALWAYS" />
-           </right>
-       </BorderPane>
-   </children>
+<VBox fx:id="mainVBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+      prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="sudoku.controller.Controller">
+    <children>
+        <ToolBar fx:id="toolbar" prefHeight="40.0" prefWidth="720.0">
+            <items>
+                <Button id="button" fx:id="newGameButton" mnemonicParsing="false" onAction="#newGame" text="New"/>
+                <Button fx:id="restartButton" mnemonicParsing="false" onAction="#restartGame" text="Restart"/>
+                <Button fx:id="solveButton" mnemonicParsing="false" onAction="#solveGame" text="Solve"/>
+                <Button fx:id="printModelButton" mnemonicParsing="false" onAction="#printModel" text="Print model"/>
+                <Pane HBox.hgrow="ALWAYS"/>
+                <MenuButton mnemonicParsing="false" text="Load/Save">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#loadCSVFile" text="Load CSV File"/>
+                        <MenuItem mnemonicParsing="false" onAction="#saveCSVFile" text="Save CSV File"/>
+                    </items>
+                </MenuButton>
+            </items>
+        </ToolBar>
+        <BorderPane fx:id="mainBorderpane" prefHeight="465.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
+            <center>
+                <GridPane fx:id="mainGridpane" alignment="CENTER" focusTraversable="true" gridLinesVisible="true"
+                          BorderPane.alignment="CENTER">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="90.0"/>
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="90.0"/>
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="90.0"/>
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="90.0"/>
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="90.0"/>
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="90.0"/>
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="90.0"/>
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="90.0"/>
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="90.0"/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES"/>
+                        <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES"/>
+                        <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES"/>
+                        <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES"/>
+                        <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES"/>
+                        <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES"/>
+                        <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES"/>
+                        <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES"/>
+                        <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES"/>
+                    </rowConstraints>
+                </GridPane>
+            </center>
+            <left>
+                <Pane minWidth="30.0" HBox.hgrow="ALWAYS"/>
+            </left>
+            <right>
+                <Pane minWidth="30.0" HBox.hgrow="ALWAYS"/>
+            </right>
+        </BorderPane>
+    </children>
 </VBox>

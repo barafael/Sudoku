@@ -222,7 +222,6 @@ public class SudokuBoard extends Observable {
                     return true;
             }
         }
-
         board[row][col] = 0;
         return false;
 
