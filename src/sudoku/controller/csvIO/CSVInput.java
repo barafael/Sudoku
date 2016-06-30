@@ -16,7 +16,6 @@ public class CSVInput {
      * Method to load a .csv file.
      *
      * @param file CSV file containing all entries, directly mapped to a sudoku field
-     * @return a sudoku board with entries from file
      */
     public static void loadCSV(File file, SudokuBoard board) {
         try (CSVReader csvReader = new CSVReader(new FileReader(file), ';')) {
@@ -31,7 +30,7 @@ public class CSVInput {
                         newBoard[rowIndex][colIndex] = row[colIndex];
                     }
                 }
-                board.setBoard(newBoard);
+                board.arr2game(newBoard);
             }
         } catch (NumberFormatException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
