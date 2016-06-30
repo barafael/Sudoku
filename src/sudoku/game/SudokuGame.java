@@ -253,4 +253,17 @@ public class SudokuGame extends Observable {
         }
         return arr;
     }
+
+    public void reset() {
+        for (int row = 0; row < SIZE; row++) {
+            for (int col = 0; col < SIZE; col++) {
+                if(!isInitial(row, col)) {
+                    board[row][col] = 0;
+                }
+            }
+        }
+        setChanged();
+        notifyObservers();
+    }
 }
+// TODO simplify squarecontains lookup

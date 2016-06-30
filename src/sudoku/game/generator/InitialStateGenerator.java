@@ -55,10 +55,10 @@ public class InitialStateGenerator {
     /**
      * Solve empty board, using randomised candidates - generates a new solved sudoku
      *
-     * @param board
-     * @param row
-     * @param col
-     * @return
+     * @param board board to be solved
+     * @param row row to start at
+     * @param col col to start at
+     * @return if board was solvable
      */
     private static boolean randomisedSolve(SudokuGame board, int row, int col) {
         if (row == board.getSize()) {
