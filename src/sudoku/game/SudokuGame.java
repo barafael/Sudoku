@@ -21,7 +21,7 @@ public class SudokuGame extends Observable {
     private final int[][] initial = new int[SIZE][SIZE];
 
     public SudokuGame(int[][] initialState) {
-        arr2game(initialState);
+        generateInitial(initialState);
     }
 
     public int getValue(int rowIndex, int colIndex) {
@@ -166,7 +166,7 @@ public class SudokuGame extends Observable {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < 9; ++i) {
             if (i % 3 == 0)
-                stringBuilder.append(" –––––––––––––––––––––––\n");
+                stringBuilder.append(" ———————————————————————\n");
             for (int j = 0; j < 9; ++j) {
                 if (j % 3 == 0) stringBuilder.append("| ");
                 stringBuilder.append(board[i][j] == 0
@@ -177,11 +177,11 @@ public class SudokuGame extends Observable {
             }
             stringBuilder.append("|\n");
         }
-        stringBuilder.append(" –––––––––––––––––––––––\n");
+        stringBuilder.append(" ———————————————————————\n");
         return stringBuilder.toString();
     }
 
-    public void arr2game(int[][] initial) {
+    private void generateInitial(int[][] initial) {
         if (isPerfectSquare(initial.length) && isPerfectSquare(initial[0].length) &&
                 initial.length == initial[0].length &&
                 initial.length == SIZE) {
