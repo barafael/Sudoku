@@ -9,7 +9,6 @@
         <Button id="button" fx:id="newGameButton" mnemonicParsing="false" onAction="#newRandomGame" text="New"/>
         <Button fx:id="restartButton" mnemonicParsing="false" onAction="#restartGame" text="Restart"/>
         <Button fx:id="solveButton" mnemonicParsing="false" onAction="#solveGame" text="Solve"/>
-        <Button fx:id="printModelButton" mnemonicParsing="false" onAction="#printModel" text="Print model"/>
         <Pane HBox.hgrow="ALWAYS"/>
         <MenuButton mnemonicParsing="false" text="Load/Save">
             <items>
