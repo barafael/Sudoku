@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -38,6 +39,7 @@ public class Controller implements Observer {
     private final TextField[][] textFields = new TextField[SIZE][SIZE];
     private final Background whiteBG = new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY));
     private final Background blueBG = new Background(new BackgroundFill(Color.BISQUE, CornerRadii.EMPTY, Insets.EMPTY));
+    private final Background redBG = new Background(new BackgroundFill(Color.ORANGERED, CornerRadii.EMPTY, Insets.EMPTY));
 
     private static final int TEXTFIELD_SIZE = 58;
     @FXML
@@ -100,7 +102,7 @@ public class Controller implements Observer {
         textField.textProperty().addListener((observableValue, oldValue, newValue) -> {
             String text = textField.getText();
             // there have to be 2 different checks, otherwise exceptions and weird behaviour occur
-            if (!text.matches("\\d*")) {
+            if (!text.matches("[1-9]\\d*")) {
                 textField.setText("");
             }
             if (text.length() > 1) {
@@ -115,6 +117,9 @@ public class Controller implements Observer {
             game.setValue(row, col, newVal);
         } catch (NumberFormatException ignored) {
             // ignore because textfield resets text to empty string if input not a number
+            if ((int) entered.charAt(0) == 8) { // Backspace
+                textFields[row][col].setBackground(whiteBG);
+            }
         }
     }
 
@@ -132,17 +137,73 @@ public class Controller implements Observer {
         if (o instanceof SudokuGame && arg instanceof Message) {
             SudokuGame game = (SudokuGame) o;
             Message msg = (Message) arg;
-            for (int row = 0; row < game.getSize(); row++) {
-                for (int col = 0; col < game.getSize(); col++) {
-                    int value = game.getValue(row, col);
-                    textFields[row][col].setText(value == 0 ? "" : value + "");
-                    if (game.isInitial(row, col)) {
-                        textFields[row][col].setBackground(blueBG);
-                        textFields[row][col].setEditable(false);
-                    } else {
-                        textFields[row][col].setBackground(whiteBG);
-                        textFields[row][col].setEditable(true);
+            Move move = msg.getMove();
+            switch (msg) {
+                case CREATED:
+                    updateAllTextfields(game);
+                    break;
+                case RESET:
+                    resetTextfields(game);
+                    break;
+                case VALID_ENTERED:
+                    if (move != null) {
+                        textFields[move.row][move.col].setText(move.value + "");
+                        textFields[move.row][move.col].setBackground(whiteBG);
+                    } else updateAllTextfields(game);
+                    break;
+                case INVALID_ENTERED:
+                    if (move != null) {
+                        List<Move> moves = msg.getArgs();
+                        if (moves != null) {// look at length
+                        }
+                        textFields[move.row][move.col].setBackground(redBG);
                     }
+                    break;
+                case AUTO_SOLVED:
+                    updateAllTextfields(game);
+                    break;
+                case WON:
+                    if (move != null) {
+                        textFields[move.row][move.col].setText(move.value + "");
+                        textFields[move.row][move.col].setBackground(whiteBG);
+                    } else updateAllTextfields(game);
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    alert.setTitle("Congratulations!");
+                    alert.setHeaderText("Puzzle solved.");
+                    alert.showAndWait();
+                    break;
+                case NONE:
+                    System.err.println("None shouldn't be used!");
+                    break;
+                default:
+                    System.err.println("Enums were added without matching them in this switch case!");
+            }
+        }
+    }
+
+    private void resetTextfields(SudokuGame game) {
+        for (int row = 0; row < game.getSize(); row++) {
+            for (int col = 0; col < game.getSize(); col++) {
+                if (!game.isInitial(row, col)) {
+                    textFields[row][col].setBackground(whiteBG);
+                    textFields[row][col].setEditable(true);
+                    textFields[row][col].setText("");
+                }
+            }
+        }
+    }
+
+    private void updateAllTextfields(SudokuGame game) {
+        for (int row = 0; row < game.getSize(); row++) {
+            for (int col = 0; col < game.getSize(); col++) {
+                int value = game.getValue(row, col);
+                textFields[row][col].setText(value == 0 ? "" : value + "");
+                if (game.isInitial(row, col)) {
+                    textFields[row][col].setBackground(blueBG);
+                    textFields[row][col].setEditable(false);
+                } else {
+                    textFields[row][col].setBackground(whiteBG);
+                    textFields[row][col].setEditable(true);
                 }
             }
         }

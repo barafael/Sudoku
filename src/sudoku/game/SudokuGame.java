@@ -1,9 +1,11 @@
 package sudoku.game;
 
+import sudoku.controller.Message;
 import sudoku.game.solver.BacktrackSolver;
 
 import java.util.Observable;
 
+import static sudoku.controller.Message.*;
 import static sudoku.game.SudokuUtil.isPerfectSquare;
 
 /**
@@ -75,9 +77,11 @@ public class SudokuGame extends Observable {
                 System.err.println("write on initial position!");
                 return false;
             }
+            Message msg = validPosition(row, col, value) ? (isSolved() ? WON : VALID_ENTERED) : INVALID_ENTERED;
+            msg.setMove(row, col, value);
             board[row][col] = value;
             setChanged();
-            notifyObservers();
+            notifyObservers(msg);
             return true;
         } else {
             return false;
@@ -103,7 +107,7 @@ public class SudokuGame extends Observable {
     public boolean solve() {
         if (BacktrackSolver.solve(board, initial, SIZE)) {
             setChanged();
-            notifyObservers();
+            notifyObservers(AUTO_SOLVED);
             return true;
         } else
             return false;
@@ -118,7 +122,7 @@ public class SudokuGame extends Observable {
             }
         }
         setChanged();
-        notifyObservers();
+        notifyObservers(RESET);
     }
 
     public boolean isSolved() {

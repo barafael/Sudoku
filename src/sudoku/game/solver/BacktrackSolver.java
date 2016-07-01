@@ -3,7 +3,7 @@ package sudoku.game.solver;
 import sudoku.game.SudokuUtil;
 
 public class BacktrackSolver {
-    public static boolean solve(int[][] board, final int[][] initial, int size) {
+    public static boolean solve(int[][] board, final int[][] initial, final int size) {
         // start at upper left corner, the rest is recursion
         return solve(board, initial, size, 0, 0);
     }
