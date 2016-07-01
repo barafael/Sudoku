@@ -10,7 +10,7 @@ public class SudokuGameTest {
     private SudokuGame game;
 
     @org.junit.Before
-    public void setUp() throws Exception {
+    public void setUp() {
         int initialState[][] = {
                 {0, 2, 0, 4, 0, 0, 7, 0, 0},
                 {7, 0, 0, 0, 0, 6, 0, 0, 8},
@@ -26,12 +26,12 @@ public class SudokuGameTest {
     }
 
     @org.junit.After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         game = null;
     }
 
     @org.junit.Test
-    public void setValue() throws Exception {
+    public void setValue() {
         assert !game.setValue(1, 0, 5);
         System.out.println("supposed to do that."); // mark error message
         assert game.setValue(8, 8, 3);
@@ -41,7 +41,7 @@ public class SudokuGameTest {
     }
 
     @org.junit.Test
-    public void squareContains() throws Exception {
+    public void squareContains() {
         game.setValue(0, 2, 1);
         game.setValue(2, 0, 3);
         game.setValue(1, 1, 5);
@@ -52,7 +52,7 @@ public class SudokuGameTest {
     }
 
     @org.junit.Test
-    public void columnContains() throws Exception {
+    public void columnContains() {
         game.setValue(1, 1, 1);
         game.setValue(8, 1, 3);
         game.setValue(3, 1, 5);
