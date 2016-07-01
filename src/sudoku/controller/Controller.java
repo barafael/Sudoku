@@ -28,8 +28,10 @@ import static sudoku.controller.Message.CREATED;
 
 public class Controller implements Observer {
     private static final int SIZE = 9;
-    private final double EASY = 0.5;
-    private final double HARD = 0.2;
+    private static final double EASY = 0.5;
+    private static final double MEDIUM = 0.35;
+    private static final double HARD = 0.1;
+    private double difficulty = EASY;
 
     private SudokuGame game;
     private final Stage primaryStage;
@@ -58,7 +60,7 @@ public class Controller implements Observer {
 
     public Controller(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        game = new SudokuGame(InitialStateGenerator.generateInitialState(HARD, SIZE));
+        game = new SudokuGame(InitialStateGenerator.generateInitialState(difficulty, SIZE));
         try {
             Path gamesaves = Paths.get("gamesaves");
             Files.createDirectories(gamesaves);
@@ -206,7 +208,7 @@ public class Controller implements Observer {
     }
 
     public void newRandomGame() {
-        newGame(InitialStateGenerator.generateInitialState(EASY, SIZE));
+        newGame(InitialStateGenerator.generateInitialState(difficulty, SIZE));
     }
 
     private void newGame(int[][] initial) {
@@ -265,5 +267,16 @@ public class Controller implements Observer {
     public void printModel() {
         System.out.println(game);
     }
+
+    public void setHard() {
+        difficulty = HARD;
+    }
+
+    public void setMedium() {
+        difficulty = MEDIUM;
+    }
+
+    public void setEasy() {
+        difficulty = EASY;
+    }
 }
-// TODO problem: pass coordinates to update method?

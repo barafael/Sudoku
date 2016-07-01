@@ -7,10 +7,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-/**
- * Created by ra on 24.06.16.
- * Part of Sudoku, in package sudoku.controller.csvIO.
- */
 public class CSVOutput {
     /**
      * Method to write a .csv file.
@@ -18,7 +14,7 @@ public class CSVOutput {
      * @param game game field to be filled with csv entries
      * @param file csv file containing all entries, directly mapped to a sudoku field
      */
-    public static void saveCSV(SudokuGame game, File file) { // TODO arr this
+    public static void saveCSV(SudokuGame game, File file) {
         try {
             Files.write(file.toPath(), game.toCSV().getBytes());
         } catch (IOException e) {

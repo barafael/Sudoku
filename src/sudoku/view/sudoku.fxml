@@ -10,6 +10,14 @@
         <Button fx:id="restartButton" mnemonicParsing="false" onAction="#restartGame" text="Restart"/>
         <Button fx:id="solveButton" mnemonicParsing="false" onAction="#solveGame" text="Solve"/>
         <Pane HBox.hgrow="ALWAYS"/>
+        <MenuButton mnemonicParsing="false" text="Difficulty">
+            <items>
+                <MenuItem mnemonicParsing="false" onAction="#setHard" text="hard"/>
+                <MenuItem mnemonicParsing="false" onAction="#setMedium" text="medium"/>
+                <MenuItem mnemonicParsing="false" onAction="#setEasy" text="easy"/>
+            </items>
+        </MenuButton>
+
         <MenuButton mnemonicParsing="false" text="Load/Save">
             <items>
                 <MenuItem mnemonicParsing="false" onAction="#loadCSVFile" text="Load CSV File"/>
