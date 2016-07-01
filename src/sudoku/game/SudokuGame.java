@@ -1,5 +1,7 @@
 package sudoku.game;
 
+import sudoku.game.solver.BacktrackSolver;
+
 import java.util.Observable;
 
 import static sudoku.game.SudokuUtil.isPerfectSquare;
@@ -42,21 +44,21 @@ public class SudokuGame extends Observable {
     /**
      * Set a value in the grid and return true if arguments valid, false otherwise.
      *
-     * @param rowIndex valid board index
-     * @param colIndex valid board index
-     * @param value    valid number between 1 and (including) SIZE.
+     * @param row   valid board index
+     * @param col   valid board index
+     * @param value valid number between 1 and (including) SIZE.
      * @return false if invalid args, true otherwise.
      */
-    public boolean setValue(int rowIndex, int colIndex, int value) {
-        if (rowIndex < SIZE && rowIndex >= 0 &&
-                colIndex < SIZE && colIndex >= 0 &&
+    public boolean setValue(int row, int col, int value) {
+        if (row < SIZE && row >= 0 &&
+                col < SIZE && col >= 0 &&
                 value <= SIZE && value >= 0) { // valid arguments?
 
-            if (initial[rowIndex][colIndex] != 0) {
+            if (isInitial(row, col)) {
                 System.err.println("write on initial position!");
                 return false;
             }
-            board[rowIndex][colIndex] = value;
+            board[row][col] = value;
             setChanged();
             notifyObservers();
             return true;
@@ -65,25 +67,16 @@ public class SudokuGame extends Observable {
         }
     }
 
-    int[] getColumn(int colIndex) {
-        int[] column = new int[SIZE];
-        for (int rowIndex = 0; rowIndex < SIZE; rowIndex++) {
-            column[rowIndex] = board[rowIndex][colIndex];
-        }
-        return column;
-    }
-
-
-    public boolean colContains(final int colIndex, final int value) {
+    boolean colContains(final int colIndex, final int value) {
         return SudokuUtil.colContains(board, SIZE, colIndex, value);
     }
-
 
     public boolean rowContains(final int rowIndex, final int value) {
         return SudokuUtil.rowContains(board, SIZE, rowIndex, value);
     }
 
-    public boolean squareContains(final int row, final int col, final int value) {
+
+    boolean squareContains(final int row, final int col, final int value) {
         return SudokuUtil.squareContains(board, SIZE, row, col, value);
     }
 
@@ -106,14 +99,14 @@ public class SudokuGame extends Observable {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < 9; ++i) {
-            if (i % 3 == 0)
+        for (int row = 0; row < SIZE; ++row) {
+            if (row % (int) Math.sqrt(SIZE) == 0)
                 stringBuilder.append(" ———————————————————————\n");
-            for (int j = 0; j < 9; ++j) {
-                if (j % 3 == 0) stringBuilder.append("| ");
-                stringBuilder.append(board[i][j] == 0
+            for (int col = 0; col < SIZE; ++col) {
+                if (col % (int) Math.sqrt(SIZE) == 0) stringBuilder.append("| ");
+                stringBuilder.append(board[row][col] == 0
                         ? " "
-                        : board[i][j]);
+                        : board[row][col]);
 
                 stringBuilder.append(' ');
             }
@@ -143,7 +136,7 @@ public class SudokuGame extends Observable {
     }
 
     public boolean solve() {
-        if (solve(0, 0)) {
+        if (BacktrackSolver.solve(board, initial, SIZE)) {
             setChanged();
             notifyObservers();
             return true;
@@ -151,31 +144,8 @@ public class SudokuGame extends Observable {
             return false; // are manual entries overwritten?
     }
 
-    private boolean solve(int row, int col) {
-        if (row == SIZE) {
-            row = 0;
-            if (++col == SIZE)
-                return true;
-        }
-        if (isInitial(row, col))
-            return solve(row + 1, col);
-
-        for (int val = 1; val <= SIZE; ++val) {
-            if (validPosition(row, col, val)) {
-                board[row][col] = val;
-                if (solve(row + 1, col))
-                    return true;
-            }
-        }
-        board[row][col] = 0;
-        return false;
-
-    }
-
     private boolean validPosition(int row, int col, int value) {
-        return value == 0 ||
-                (!rowContains(row, value) && !colContains(col, value) &&
-                        !squareContains(row, col, value));
+        return SudokuUtil.validPosition(board, SIZE, row, col, value);
     }
 
     public boolean isSolved() {
@@ -186,14 +156,6 @@ public class SudokuGame extends Observable {
             }
         }
         return true;
-    }
-
-    public int[][] getBoard() {
-        int[][] arr = new int[SIZE][SIZE];
-        for (int rowIndex = 0; rowIndex < SIZE; rowIndex++) {
-            System.arraycopy(board, 0, arr, 0, SIZE);
-        }
-        return arr;
     }
 
     public void reset() {
@@ -208,4 +170,3 @@ public class SudokuGame extends Observable {
         notifyObservers();
     }
 }
-// TODO simplify squarecontains lookup
