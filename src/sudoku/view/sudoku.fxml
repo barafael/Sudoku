@@ -28,7 +28,7 @@
                         <MenuItem mnemonicParsing="false" onAction="#setEasy" text="easy"/>
                     </items>
                 </SplitMenuButton>
-               <MenuButton mnemonicParsing="false" text="Load/Save">
+                <MenuButton mnemonicParsing="false" text="Load/Save">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#loadCSVFile" text="Load CSV File"/>
                         <MenuItem mnemonicParsing="false" onAction="#saveCSVFile" text="Save CSV File"/>

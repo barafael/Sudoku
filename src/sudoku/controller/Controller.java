@@ -36,14 +36,14 @@ public class Controller implements Observer {
     private final Stage primaryStage;
     private File initialState;
     private final TextField[][] textFields = new TextField[SIZE][SIZE];
-
     private final Background whiteBG = new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY));
-    private final Background blueBG = new Background(new BackgroundFill(Color.BISQUE, CornerRadii.EMPTY, Insets.EMPTY));
-    private final Background redBG = new Background(new BackgroundFill(Color.ORANGERED, CornerRadii.EMPTY, Insets.EMPTY));
 
-    Method defaultSolveMethod;
+    private final Background bisqueBG = new Background(new BackgroundFill(Color.BISQUE, CornerRadii.EMPTY, Insets.EMPTY));
+    private final Background redBG = new Background(new BackgroundFill(Color.ORANGERED, CornerRadii.EMPTY, Insets.EMPTY));
+    private Method defaultSolveMethod;
 
     private final Background greenBg = new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY));
+
     private static final int TEXTFIELD_SIZE = 58;
     @FXML
     public VBox mainVBox;
@@ -57,6 +57,8 @@ public class Controller implements Observer {
     public MenuItem bTrackSolveButton;
     @FXML
     public MenuItem logicSolveButton;
+    @FXML
+    public SplitMenuButton difficultyMenu;
     @FXML
     public Button hintButton;
     @FXML
@@ -94,6 +96,7 @@ public class Controller implements Observer {
                 textField.setAlignment(Pos.CENTER);
                 textField.setMaxSize(TEXTFIELD_SIZE, TEXTFIELD_SIZE);
                 textField.setMinSize(TEXTFIELD_SIZE, TEXTFIELD_SIZE);
+                textField.setBackground(whiteBG);
                 textField.setStyle("-fx-font-family: Cairo; -fx-font-size: 30;");
                 limitNumberField(textField);
                 textField.setOnKeyTyped(event -> {
@@ -166,7 +169,7 @@ public class Controller implements Observer {
                     } else updateAllTextfields(game);
                     break;
                 case INVALID_ENTERED:
-                    if (move != null) {
+                    if (move != null && liveErrorHighlight) {
                         textFields[move.row][move.col].setBackground(redBG);
                     }
                     break;
@@ -210,8 +213,16 @@ public class Controller implements Observer {
                 int value = game.getValue(row, col);
                 textFields[row][col].setText(value == 0 ? "" : value + "");
                 if (game.isInitial(row, col)) {
-                    textFields[row][col].setBackground(blueBG);
+                    textFields[row][col].setBackground(bisqueBG);
                     textFields[row][col].setEditable(false);
+                } else if (liveErrorHighlight) {
+                    if (game.isValid(row, col) || value == 0) {
+                        textFields[row][col].setBackground(whiteBG);
+                        textFields[row][col].setEditable(true);
+                    } else {
+                        textFields[row][col].setBackground(redBG);
+                        textFields[row][col].setEditable(true);
+                    }
                 } else {
                     textFields[row][col].setBackground(whiteBG);
                     textFields[row][col].setEditable(true);
@@ -234,6 +245,14 @@ public class Controller implements Observer {
 
     public void restartGame() {
         game.reset();
+    }
+
+    public void defaultSolve() {
+        try {
+            defaultSolveMethod.invoke(this);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
     }
 
     public void bTrackSolveGame() {
@@ -267,6 +286,19 @@ public class Controller implements Observer {
 
     public void toggleHint() {
         liveErrorHighlight = !liveErrorHighlight;
+        updateAllTextfields(game);
+    }
+
+    public void setHard() {
+        difficulty = HARD;
+    }
+
+    public void setMedium() {
+        difficulty = MEDIUM;
+    }
+
+    public void setEasy() {
+        difficulty = EASY;
     }
 
     public void loadCSVFile() {
@@ -296,26 +328,6 @@ public class Controller implements Observer {
         File selectedFile = fileChooser.showSaveDialog(primaryStage);
         if (selectedFile != null) {
             CSVOutput.saveCSV(game, selectedFile);
-        }
-    }
-
-    public void setHard() {
-        difficulty = HARD;
-    }
-
-    public void setMedium() {
-        difficulty = MEDIUM;
-    }
-
-    public void setEasy() {
-        difficulty = EASY;
-    }
-
-    public void defaultSolve() {
-        try {
-            defaultSolveMethod.invoke(this);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
         }
     }
 }
