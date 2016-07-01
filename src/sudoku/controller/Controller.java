@@ -41,13 +41,13 @@ public class Controller implements Observer {
     @FXML
     public VBox mainVBox;
     @FXML
-    public Button solveButton;
+    public ToolBar toolbar;
     @FXML
     public Button newGameButton;
     @FXML
     public Button restartButton;
     @FXML
-    public ToolBar toolbar;
+    public Button solveButton;
     @FXML
     public BorderPane mainBorderpane;
     @FXML
@@ -94,15 +94,6 @@ public class Controller implements Observer {
         this.update(game, null);
     }
 
-    private void updateModel(String entered, int row, int col) {
-        try {
-            int newVal = Integer.parseInt(entered);
-            game.setValue(row, col, newVal);
-        } catch (NumberFormatException ignored) {
-            // ignore because textfield resets text to empty string if input not a number
-        }
-    }
-
     private static void limitNumberField(TextField textField) {
         textField.textProperty().addListener((observableValue, oldValue, newValue) -> {
             String text = textField.getText();
@@ -114,6 +105,60 @@ public class Controller implements Observer {
                 textField.setText(text.substring(0, 1));
             }
         });
+    }
+
+    private void updateModel(String entered, int row, int col) {
+        try {
+            int newVal = Integer.parseInt(entered);
+            game.setValue(row, col, newVal);
+        } catch (NumberFormatException ignored) {
+            // ignore because textfield resets text to empty string if input not a number
+        }
+    }
+
+    /**
+     * This method is called whenever the observed object is changed. An
+     * application calls an <tt>Observable</tt> object's
+     * <code>notifyObservers</code> method to have all the object's
+     * observers notified of the change.
+     *
+     * @param o   the observable object.
+     * @param arg an argument passed to the <code>notifyObservers</code>
+     */
+    @Override
+    public void update(Observable o, Object arg) {
+        if (o instanceof SudokuGame) {
+            SudokuGame game = (SudokuGame) o;
+            for (int row = 0; row < game.getSize(); row++) {
+                for (int col = 0; col < game.getSize(); col++) {
+                    int value = game.getValue(row, col);
+                    textFields[row][col].setText(value == 0 ? "" : value + "");
+                    if (game.isInitial(row, col)) {
+                        textFields[row][col].setBackground(blueBG);
+                        textFields[row][col].setEditable(false);
+                    } else {
+                        textFields[row][col].setBackground(whiteBG);
+                        textFields[row][col].setEditable(true);
+                    }
+                }
+            }
+        }
+    }
+
+    public void newRandomGame() {
+        newGame(InitialStateGenerator.generateInitialState(EASY, SIZE));
+    }
+
+    private void newGame(int[][] initial) {
+        game.deleteObserver(this);
+        game = new SudokuGame(initial);
+        game.addObserver(this);
+        update(game, null);
+        CSVOutput.saveCSV(game, initialState);
+    }
+
+    public void restartGame() {
+        game.reset();
     }
 
     public void solveGame() {
@@ -147,54 +192,8 @@ public class Controller implements Observer {
         }
     }
 
-    public void newRandomGame() {
-        newGame(InitialStateGenerator.generateInitialState(EASY, SIZE));
-    }
-
-    public void newGame(int[][] initial) {
-        game.deleteObserver(this);
-        game = new SudokuGame(initial);
-        game.addObserver(this);
-        update(game, null);
-        CSVOutput.saveCSV(game, initialState);
-    }
-
-    public void restartGame() {
-        game.reset();
-    }
-
-    /**
-     * This method is called whenever the observed object is changed. An
-     * application calls an <tt>Observable</tt> object's
-     * <code>notifyObservers</code> method to have all the object's
-     * observers notified of the change.
-     *
-     * @param o   the observable object.
-     * @param arg an argument passed to the <code>notifyObservers</code>
-     */
-    @Override
-    public void update(Observable o, Object arg) {
-        if (o instanceof SudokuGame) {
-            SudokuGame game = (SudokuGame) o;
-            for (int row = 0; row < game.getSize(); row++) {
-                for (int col = 0; col < game.getSize(); col++) {
-                    int value = game.getValue(row, col);
-                    textFields[row][col].setText(value == 0 ? "" : value + "");
-                    if (game.isInitial(row, col)) {
-                        textFields[row][col].setBackground(blueBG);
-                        textFields[row][col].setEditable(false);
-                    } else {
-                        textFields[row][col].setBackground(whiteBG);
-                        textFields[row][col].setEditable(true);
-                    }
-                }
-            }
-        }
-    }
-
     public void printModel() {
         System.out.println(game);
     }
 }
-// TODO problem: solver in game, that's not good
 // TODO problem: pass coordinates to update method?
