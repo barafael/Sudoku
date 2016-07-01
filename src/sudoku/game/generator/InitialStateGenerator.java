@@ -1,14 +1,12 @@
 package sudoku.game.generator;
 
-import sudoku.game.SudokuGame;
-import sudoku.game.solver.BacktrackSolver;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import static sudoku.game.SudokuGame.*;
+import static sudoku.game.SudokuUtil.validPosition;
+import static sudoku.game.solver.BacktrackSolver.solve;
 
 /**
  * Created by ra on 25.06.16.
@@ -18,13 +16,13 @@ public class InitialStateGenerator {
     private final static Random rng = new Random();
 
     public static int[][] generateInitialState(double difficulty, final int SIZE) {
-        final int[][] board = new int[SIZE][SIZE]; // Empty initial positions
-        randomisedSolve(board, SIZE, 0, 0); // get solved sudoku
-        pruneResult(board, SIZE, difficulty);
-        return board;
+        final int[][] initial = new int[SIZE][SIZE]; // Empty initial positions
+        randomisedSolve(initial, SIZE, 0, 0); // get solved sudoku
+        pruneBoard(initial, SIZE, difficulty);
+        return initial;
     }
 
-    private static void pruneResult(int[][] board, int size, double difficulty) {
+    private static void pruneBoard(int[][] board, int size, double difficulty) {
         if (difficulty < 1 && difficulty > 0) {
             int remaining = (int) (size * size * difficulty);
             int toRemove = size * size - remaining;
@@ -41,7 +39,8 @@ public class InitialStateGenerator {
         int value = board[row][col]; // != 0?
         board[row][col] = 0;
         // see if board still solvable
-        if (BacktrackSolver.solve(new SudokuGame(board))) {
+        // only interested if board is solvable, so use board as initial state
+        if (solve(new int[size][size], board, size)) {
             return true;
         } else {
             board[row][col] = value;
@@ -80,12 +79,4 @@ public class InitialStateGenerator {
         board[row][col] = 0;
         return false;
     }
-
-    private static boolean validPosition(int[][] board, int size, int row, int col, int value) {
-        return value == 0 ||
-                (!rowContains(board, size, row, value) && !colContains(board, size, col, value) &&
-                        !squareContains(board, size, row, col, value));
-    }
 }
-
-
