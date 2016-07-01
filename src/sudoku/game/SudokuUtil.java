@@ -6,20 +6,6 @@ package sudoku.game;
  */
 public class SudokuUtil {
     /**
-     * Returns if the specified column contains the specified value.
-     *
-     * @param colIndex 0..SIZE-1
-     * @return true if column at colIndex contains value.
-     */
-    static boolean colContains(final int[][] board, int size, final int colIndex, final int value) {
-        for (int rowIndex = 0; rowIndex < size; rowIndex++) {
-            if (board[rowIndex][colIndex] == value)
-                return true;
-        }
-        return false;
-    }
-
-    /**
      * Returns if the specified row contains the specified value.
      *
      * @param rowIndex 0..SIZE-1
@@ -27,6 +13,20 @@ public class SudokuUtil {
      */
     static boolean rowContains(final int[][] board, int size, final int rowIndex, final int value) {
         for (int colIndex = 0; colIndex < size; colIndex++) {
+            if (board[rowIndex][colIndex] == value)
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     * Returns if the specified column contains the specified value.
+     *
+     * @param colIndex 0..SIZE-1
+     * @return true if column at colIndex contains value.
+     */
+    static boolean colContains(final int[][] board, int size, final int colIndex, final int value) {
+        for (int rowIndex = 0; rowIndex < size; rowIndex++) {
             if (board[rowIndex][colIndex] == value)
                 return true;
         }
@@ -60,6 +60,12 @@ public class SudokuUtil {
         } else return false;
     }
 
+    public static boolean validPosition(int[][] board, int size, int row, int col, int value) {
+        return value == 0 ||
+                (!rowContains(board, size, row, value) && !colContains(board, size, col, value) &&
+                        !squareContains(board, size, row, col, value));
+    }
+
     static boolean isPerfectSquare(int number) {
         if (number > 0) { // 0 is explicitly excluded
             int temp = (int) (Math.sqrt(number));
@@ -67,11 +73,5 @@ public class SudokuUtil {
         } else {
             return false;
         }
-    }
-
-    public static boolean validPosition(int[][] board, int size, int row, int col, int value) {
-        return value == 0 ||
-                (!rowContains(board, size, row, value) && !colContains(board, size, col, value) &&
-                        !squareContains(board, size, row, col, value));
     }
 }
