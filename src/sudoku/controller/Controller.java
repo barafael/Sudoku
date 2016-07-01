@@ -184,7 +184,7 @@ public class Controller implements Observer {
                 new FileChooser.ExtensionFilter("All Files", "*.*"));
         File selectedFile = fileChooser.showOpenDialog(primaryStage);
         if (selectedFile != null) {
-            int[][] newInitial = CSVInput.loadCSV(selectedFile));
+            int[][] newInitial = CSVInput.loadCSV(selectedFile);
             if (newInitial != null) {
                 newGame(newInitial);
                 CSVOutput.saveCSV(game, initialState);
