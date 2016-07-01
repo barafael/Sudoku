@@ -22,32 +22,6 @@ public class InitialStateGenerator {
         return initial;
     }
 
-    private static void pruneBoard(int[][] board, int size, double difficulty) {
-        if (difficulty < 1 && difficulty > 0) {
-            int remaining = (int) (size * size * difficulty);
-            int toRemove = size * size - remaining;
-            while (toRemove > 0) {
-                boolean removed = tryRemove(board, size);
-                toRemove = removed ? toRemove - 1 : toRemove;
-            }
-        }
-    }
-
-    private static boolean tryRemove(int[][] board, int size) {
-        int row = rng.nextInt(size);
-        int col = rng.nextInt(size);
-        int value = board[row][col]; // != 0?
-        board[row][col] = 0;
-        // see if board still solvable
-        // only interested if board is solvable, so use board as initial state
-        if (solve(new int[size][size], board, size)) {
-            return true;
-        } else {
-            board[row][col] = value;
-            return false;
-        }
-    }
-
     /**
      * Solve empty board, using randomised candidates - generates a new solved sudoku
      *
@@ -78,5 +52,31 @@ public class InitialStateGenerator {
         }
         board[row][col] = 0;
         return false;
+    }
+
+    private static void pruneBoard(int[][] board, int size, double difficulty) {
+        if (difficulty < 1 && difficulty > 0) {
+            int remaining = (int) (size * size * difficulty);
+            int toRemove = size * size - remaining;
+            while (toRemove > 0) {
+                boolean removed = tryRemove(board, size);
+                toRemove = removed ? toRemove - 1 : toRemove;
+            }
+        }
+    }
+
+    private static boolean tryRemove(int[][] board, int size) {
+        int row = rng.nextInt(size);
+        int col = rng.nextInt(size);
+        int value = board[row][col]; // != 0?
+        board[row][col] = 0;
+        // see if board still solvable
+        // only interested if board is solvable, so use board as initial state
+        if (solve(new int[size][size], board, size)) {
+            return true;
+        } else {
+            board[row][col] = value;
+            return false;
+        }
     }
 }
