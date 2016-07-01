@@ -1,7 +1,6 @@
 package sudoku.game;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 
 /**
  * Created by ra on 23.06.16.
@@ -64,28 +63,10 @@ public class SudokuGameTest {
     }
 
     @org.junit.Test
-    public void getColumn() throws Exception {
-        game.setValue(0, 0, 1);
-        game.setValue(8, 0, 1);
-        game.setValue(0, 8, 3);
-        assert Arrays.equals(game.getColumn(0), new int[]{1, 7, 0, 0, 0, 0, 9, 3, 1});
-        assert Arrays.equals(game.getColumn(8), new int[]{3, 8, 1, 0, 0, 0, 0, 7, 0});
-    }
-
-    @org.junit.Test
     public void perfectSquare() throws Exception {
         Method method = SudokuGame.class.getDeclaredMethod("isPerfectSquare", Integer.TYPE);
         method.setAccessible(true);
         assert!method.invoke(game, 10).equals(true);
         assert method.invoke(game, 81).equals(true);
-    }
-
-    @org.junit.Test
-    public void getBoard() throws Exception {
-        SudokuGame newBoard = new SudokuGame(game.getBoard());
-        assert newBoard.toCSV().equals(game.toCSV());
-        // assert that there is no write through
-        game.setValue(1, 1, 5);
-        assert !newBoard.toCSV().equals(game.toCSV());
     }
 }
