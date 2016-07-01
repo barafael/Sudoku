@@ -162,7 +162,14 @@ public class Controller implements Observer {
     }
 
     public void solveGame() {
-        game.solve();
+        if (!game.solve()) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning Dialog");
+            alert.setHeaderText("Unsolvable Sudoku");
+            alert.setContentText("This Sudoku was not solvable by the used algorithm.");
+            alert.showAndWait();
+
+        }
     }
 
     public void loadCSVFile() {
