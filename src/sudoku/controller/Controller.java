@@ -3,10 +3,7 @@ package sudoku.controller;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToolBar;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
@@ -18,6 +15,8 @@ import sudoku.game.generator.InitialStateGenerator;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -32,15 +31,17 @@ public class Controller implements Observer {
     private static final double MEDIUM = 0.35;
     private static final double HARD = 0.1;
     private double difficulty = EASY;
-
+    private boolean liveErrorHighlight = false;
     private SudokuGame game;
     private final Stage primaryStage;
     private File initialState;
-
     private final TextField[][] textFields = new TextField[SIZE][SIZE];
+
     private final Background whiteBG = new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY));
     private final Background blueBG = new Background(new BackgroundFill(Color.BISQUE, CornerRadii.EMPTY, Insets.EMPTY));
     private final Background redBG = new Background(new BackgroundFill(Color.ORANGERED, CornerRadii.EMPTY, Insets.EMPTY));
+
+    Method defaultSolveMethod;
 
     private static final int TEXTFIELD_SIZE = 58;
     @FXML
@@ -52,7 +53,11 @@ public class Controller implements Observer {
     @FXML
     public Button restartButton;
     @FXML
-    public Button solveButton;
+    public MenuItem bTrackSolveButton;
+    @FXML
+    public MenuItem logicSolveButton;
+    @FXML
+    public Button hintButton;
     @FXML
     public BorderPane mainBorderpane;
     @FXML
@@ -72,6 +77,11 @@ public class Controller implements Observer {
             alert.setHeaderText("File I/O Error");
             alert.setContentText("There was an error during gamesave directory opening/writing.");
             alert.showAndWait();
+        }
+        try {
+            defaultSolveMethod = this.getClass().getDeclaredMethod("bTrackSolveGame");
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
         }
     }
 
@@ -101,6 +111,7 @@ public class Controller implements Observer {
 
     private static void limitNumberField(TextField textField) {
         textField.textProperty().addListener((observableValue, oldValue, newValue) -> {
+
             String text = textField.getText();
             // there have to be 2 different checks, otherwise exceptions and weird behaviour occur
             if (!text.matches("[1-9]\\d*")) {
@@ -223,7 +234,12 @@ public class Controller implements Observer {
         game.reset();
     }
 
-    public void solveGame() {
+    public void bTrackSolveGame() {
+        try {
+            defaultSolveMethod = this.getClass().getDeclaredMethod("bTrackSolveGame");
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
         if (!game.solve()) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Warning Dialog");
@@ -232,6 +248,23 @@ public class Controller implements Observer {
             alert.showAndWait();
 
         }
+    }
+
+    public void logicSolveGame() {
+        try {
+            defaultSolveMethod = this.getClass().getDeclaredMethod("logicSolveGame");
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        game.logicSolve();
+    }
+
+    public void displayHint() {
+        game.getHint();
+    }
+
+    public void toggleHint() {
+        liveErrorHighlight = !liveErrorHighlight;
     }
 
     public void loadCSVFile() {
@@ -264,10 +297,6 @@ public class Controller implements Observer {
         }
     }
 
-    public void printModel() {
-        System.out.println(game);
-    }
-
     public void setHard() {
         difficulty = HARD;
     }
@@ -278,5 +307,13 @@ public class Controller implements Observer {
 
     public void setEasy() {
         difficulty = EASY;
+    }
+
+    public void defaultSolve() {
+        try {
+            defaultSolveMethod.invoke(this);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
     }
 }
