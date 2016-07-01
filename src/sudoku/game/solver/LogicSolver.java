@@ -1,6 +1,9 @@
 package sudoku.game.solver;
 
+import sudoku.controller.Move;
 import sudoku.game.SudokuUtil;
+
+import static sudoku.game.SudokuUtil.isFull;
 
 /**
  * Created by ra on 01.07.16.
@@ -50,15 +53,6 @@ public class LogicSolver {
         return isFull(board);
     }
 
-    private static boolean isFull(int[][] board) {
-        for (int row = 0; row < board.length; row++) {
-            for (int col = 0; col < board.length; col++) {
-                if (board[row][col] == 0)
-                    return false;
-            }
-        }
-        return true;
-    }
 
     private static int onlyOne(boolean[] booleans) {
         int count = 0;
@@ -82,4 +76,24 @@ public class LogicSolver {
         return !SudokuUtil.validPosition(board, size, row, col, value);
     }
 
+    public static Move createHint(int[][] board, int size) {
+        boolean[][][] occurrences = new boolean[size][size][size];
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                if (board[row][col] == 0) {
+                    for (int value = 0; value < size; value++) {
+                        occurrences[row][col][value] = occurs(board, size, row, col, value + 1);
+                    }
+                    int value = onlyOne(occurrences[row][col]);
+                    if (value == -1) {
+                        System.err.println("no vacant slots!");
+                        return null;
+                    } else if (value > 0) {
+                        return new Move(row, col, value);
+                    }
+                }
+            }
+        }
+        return null;
+    }
 }

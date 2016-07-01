@@ -1,6 +1,7 @@
 package sudoku.game;
 
 import sudoku.controller.Message;
+import sudoku.controller.Move;
 import sudoku.game.solver.BacktrackSolver;
 import sudoku.game.solver.LogicSolver;
 
@@ -185,7 +186,7 @@ public class SudokuGame extends Observable {
         return stringBuilder.toString();
     }
 
-    public void getHint() {
-
+    public Move getHint() {
+        return LogicSolver.createHint(board, SIZE);
     }
 }
