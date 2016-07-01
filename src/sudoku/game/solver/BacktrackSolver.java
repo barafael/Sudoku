@@ -1,37 +1,31 @@
 package sudoku.game.solver;
 
-import sudoku.game.SudokuGame;
+import sudoku.game.SudokuUtil;
 
 public class BacktrackSolver {
-    public static boolean solve(SudokuGame board) {
-        return solve(board, 0, 0); // start at upper left corner, the rest is recursion
+    public static boolean solve(int[][] board, final int[][] initial, int size) {
+        // start at upper left corner, the rest is recursion
+        return solve(board, initial, size, 0, 0);
     }
 
-    private static boolean solve(SudokuGame board, int row, int col) {
-        int SIZE = board.getSize();
-        if (row == SIZE) {
+    private static boolean solve(int[][] board, final int[][] initial, int size, int row, int col) {
+        if (row == size) {
             row = 0;
-            if (++col == SIZE)
+            if (++col == size)
                 return true;
         }
-        if (board.isInitial(row, col))
-            return solve(board, row + 1, col);
+        if (initial[row][col] != 0)
+            return solve(board, initial, size, row + 1, col);
 
-        for (int val = 1; val <= SIZE; ++val) {
-            if (validPosition(board, row, col, val)) {
-                board.setValue(row, col, val);
-                if (solve(board, row + 1, col))
+        for (int val = 1; val <= size; ++val) {
+            if (SudokuUtil.validPosition(board, size, row, col, val)) {
+                board[row][col] = val;
+                if (solve(board, initial, size, row + 1, col))
                     return true;
             }
         }
 
-        board.setValue(row, col, 0);
+        board[row][col] = 0; // reset position! This branch was not solvable
         return false;
-    }
-
-    private static boolean validPosition(SudokuGame board, int row, int col, int value) {
-        return value == 0 ||
-                (!board.rowContains(row, value) && !board.colContains(col, value) &&
-                        !board.squareContains(row, col, value));
     }
 }
