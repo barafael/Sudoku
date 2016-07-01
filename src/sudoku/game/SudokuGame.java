@@ -2,6 +2,7 @@ package sudoku.game;
 
 import sudoku.controller.Message;
 import sudoku.game.solver.BacktrackSolver;
+import sudoku.game.solver.LogicSolver;
 
 import java.util.Observable;
 
@@ -104,7 +105,16 @@ public class SudokuGame extends Observable {
         return SudokuUtil.validPosition(board, SIZE, row, col, value);
     }
 
-    public boolean solve() {
+    public boolean logicSolve() {
+        if (LogicSolver.solve(board, SIZE)) {
+            setChanged();
+            notifyObservers(AUTO_SOLVED);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean bTrackSolve() {
         int[][] clone = cloneBoard();
         if (BacktrackSolver.solve(board, clone, SIZE)) {
             setChanged();
@@ -136,12 +146,10 @@ public class SudokuGame extends Observable {
         return true;
     }
 
-    public int[][] cloneBoard() {
+    private int[][] cloneBoard() {
         int[][] clone = new int[SIZE][SIZE];
         for (int row = 0; row < SIZE; row++) {
-            for (int col = 0; col < SIZE; col++) {
-                clone[row][col] = board[row][col];
-            }
+            System.arraycopy(board[row], 0, clone[row], 0, SIZE);
         }
         return clone;
     }
@@ -175,5 +183,9 @@ public class SudokuGame extends Observable {
         }
         stringBuilder.append(" ———————————————————————\n");
         return stringBuilder.toString();
+    }
+
+    public void getHint() {
+
     }
 }
