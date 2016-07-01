@@ -66,6 +66,16 @@ public class SudokuUtil {
                         !squareContains(board, size, row, col, value));
     }
 
+    public static boolean isFull(int[][] board) {
+        for (int row = 0; row < board.length; row++) {
+            for (int col = 0; col < board.length; col++) {
+                if (board[row][col] == 0)
+                    return false;
+            }
+        }
+        return true;
+    }
+
     static boolean isPerfectSquare(int number) {
         if (number > 0) { // 0 is explicitly excluded
             int temp = (int) (Math.sqrt(number));
