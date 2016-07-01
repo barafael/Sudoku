@@ -24,8 +24,29 @@ public class SudokuGame extends Observable {
     private final int[][] board = new int[SIZE][SIZE];
     private final int[][] initial = new int[SIZE][SIZE];
 
-    public SudokuGame(int[][] initialState) {
-        generateInitial(initialState);
+    public SudokuGame(int[][] initial) {
+        if (isPerfectSquare(initial.length) && isPerfectSquare(initial[0].length) &&
+                initial.length == initial[0].length &&
+                initial.length == SIZE) {
+            for (int row = 0; row < SIZE; row++) {
+                for (int col = 0; col < SIZE; col++) {
+                    this.board[row][col] = 0;
+                    this.initial[row][col] = 0;
+                    if (initial[row][col] != 0) {
+                        this.initial[row][col] = initial[row][col];
+                        this.board[row][col] = initial[row][col];
+                    }
+                }
+            }
+        }
+    }
+
+    public boolean isInitial(int row, int col) {
+        return initial[row][col] != 0;
+    }
+
+    public int getSize() {
+        return SIZE;
     }
 
     public int getValue(int rowIndex, int colIndex) {
@@ -35,10 +56,6 @@ public class SudokuGame extends Observable {
         }
         System.err.println("Invalid access!");
         return 0;
-    }
-
-    public boolean isInitial(int row, int col) {
-        return initial[row][col] != 0;
     }
 
     /**
@@ -75,14 +92,43 @@ public class SudokuGame extends Observable {
         return SudokuUtil.rowContains(board, SIZE, rowIndex, value);
     }
 
-
     boolean squareContains(final int row, final int col, final int value) {
         return SudokuUtil.squareContains(board, SIZE, row, col, value);
     }
 
+    private boolean validPosition(int row, int col, int value) {
+        return SudokuUtil.validPosition(board, SIZE, row, col, value);
+    }
 
-    public int getSize() {
-        return SIZE;
+    public boolean solve() {
+        if (BacktrackSolver.solve(board, initial, SIZE)) {
+            setChanged();
+            notifyObservers();
+            return true;
+        } else
+            return false;
+    }
+
+    public void reset() {
+        for (int row = 0; row < SIZE; row++) {
+            for (int col = 0; col < SIZE; col++) {
+                if (!isInitial(row, col)) {
+                    board[row][col] = 0;
+                }
+            }
+        }
+        setChanged();
+        notifyObservers();
+    }
+
+    public boolean isSolved() {
+        for (int row = 0; row < SIZE; row++) {
+            for (int col = 0; col < SIZE; col++) {
+                if (board[row][col] == 0 || !validPosition(row, col, board[row][col]))
+                    return false;
+            }
+        }
+        return true;
     }
 
     public String toCSV() {
@@ -100,10 +146,10 @@ public class SudokuGame extends Observable {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         for (int row = 0; row < SIZE; ++row) {
-            if (row % (int) Math.sqrt(SIZE) == 0)
+            if (row % Math.sqrt(SIZE) == 0)
                 stringBuilder.append(" ———————————————————————\n");
             for (int col = 0; col < SIZE; ++col) {
-                if (col % (int) Math.sqrt(SIZE) == 0) stringBuilder.append("| ");
+                if (col % Math.sqrt(SIZE) == 0) stringBuilder.append("| ");
                 stringBuilder.append(board[row][col] == 0
                         ? " "
                         : board[row][col]);
@@ -114,59 +160,5 @@ public class SudokuGame extends Observable {
         }
         stringBuilder.append(" ———————————————————————\n");
         return stringBuilder.toString();
-    }
-
-    private void generateInitial(int[][] initial) {
-        if (isPerfectSquare(initial.length) && isPerfectSquare(initial[0].length) &&
-                initial.length == initial[0].length &&
-                initial.length == SIZE) {
-            for (int row = 0; row < SIZE; row++) {
-                for (int col = 0; col < SIZE; col++) {
-                    this.board[row][col] = 0;
-                    this.initial[row][col] = 0;
-                    if (initial[row][col] != 0) {
-                        this.initial[row][col] = initial[row][col];
-                        this.board[row][col] = initial[row][col];
-                    }
-                }
-            }
-        }
-        setChanged();
-        notifyObservers();
-    }
-
-    public boolean solve() {
-        if (BacktrackSolver.solve(board, initial, SIZE)) {
-            setChanged();
-            notifyObservers();
-            return true;
-        } else
-            return false; // are manual entries overwritten?
-    }
-
-    private boolean validPosition(int row, int col, int value) {
-        return SudokuUtil.validPosition(board, SIZE, row, col, value);
-    }
-
-    public boolean isSolved() {
-        for (int row = 0; row < SIZE; row++) {
-            for (int col = 0; col < SIZE; col++) {
-                if (!validPosition(row, col, board[row][col]))
-                    return false;
-            }
-        }
-        return true;
-    }
-
-    public void reset() {
-        for (int row = 0; row < SIZE; row++) {
-            for (int col = 0; col < SIZE; col++) {
-                if (!isInitial(row, col)) {
-                    board[row][col] = 0;
-                }
-            }
-        }
-        setChanged();
-        notifyObservers();
     }
 }
