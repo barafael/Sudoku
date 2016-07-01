@@ -105,7 +105,8 @@ public class SudokuGame extends Observable {
     }
 
     public boolean solve() {
-        if (BacktrackSolver.solve(board, initial, SIZE)) {
+        int[][] clone = cloneBoard();
+        if (BacktrackSolver.solve(board, clone, SIZE)) {
             setChanged();
             notifyObservers(AUTO_SOLVED);
             return true;
@@ -125,7 +126,7 @@ public class SudokuGame extends Observable {
         notifyObservers(RESET);
     }
 
-    public boolean isSolved() {
+    private boolean isSolved() {
         for (int row = 0; row < SIZE; row++) {
             for (int col = 0; col < SIZE; col++) {
                 if (board[row][col] == 0 || !validPosition(row, col, board[row][col]))
@@ -133,6 +134,16 @@ public class SudokuGame extends Observable {
             }
         }
         return true;
+    }
+
+    public int[][] cloneBoard() {
+        int[][] clone = new int[SIZE][SIZE];
+        for (int row = 0; row < SIZE; row++) {
+            for (int col = 0; col < SIZE; col++) {
+                clone[row][col] = board[row][col];
+            }
+        }
+        return clone;
     }
 
     public String toCSV() {
