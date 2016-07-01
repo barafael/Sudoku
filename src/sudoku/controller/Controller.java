@@ -24,6 +24,8 @@ import java.nio.file.Paths;
 import java.util.Observable;
 import java.util.Observer;
 
+import static sudoku.controller.Message.CREATED;
+
 public class Controller implements Observer {
     private static final int SIZE = 9;
     private final double EASY = 0.5;
@@ -91,7 +93,7 @@ public class Controller implements Observer {
             }
         }
         game.addObserver(this);
-        this.update(game, null);
+        this.update(game, CREATED);
     }
 
     private static void limitNumberField(TextField textField) {
@@ -127,8 +129,9 @@ public class Controller implements Observer {
      */
     @Override
     public void update(Observable o, Object arg) {
-        if (o instanceof SudokuGame) {
+        if (o instanceof SudokuGame && arg instanceof Message) {
             SudokuGame game = (SudokuGame) o;
+            Message msg = (Message) arg;
             for (int row = 0; row < game.getSize(); row++) {
                 for (int col = 0; col < game.getSize(); col++) {
                     int value = game.getValue(row, col);
@@ -150,10 +153,10 @@ public class Controller implements Observer {
     }
 
     private void newGame(int[][] initial) {
-        game.deleteObserver(this);
-        game = new SudokuGame(initial);
-        game.addObserver(this);
-        update(game, null);
+        game.deleteObserver(this); // delete from old game
+        game = new SudokuGame(initial); // realloc
+        game.addObserver(this); // add to new game
+        initialize();
         CSVOutput.saveCSV(game, initialState);
     }
 
@@ -181,8 +184,11 @@ public class Controller implements Observer {
                 new FileChooser.ExtensionFilter("All Files", "*.*"));
         File selectedFile = fileChooser.showOpenDialog(primaryStage);
         if (selectedFile != null) {
-            newGame(CSVInput.loadCSV(selectedFile));
-            CSVOutput.saveCSV(game, initialState);
+            int[][] newInitial = CSVInput.loadCSV(selectedFile));
+            if (newInitial != null) {
+                newGame(newInitial);
+                CSVOutput.saveCSV(game, initialState);
+            }
         }
     }
 
