@@ -9,6 +9,7 @@ public enum Message {
     CREATED,
     VALID_ENTERED,
     INVALID_ENTERED,
+    HINT,
     RESET,
     AUTO_SOLVED,
     WON;

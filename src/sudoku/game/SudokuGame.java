@@ -186,7 +186,14 @@ public class SudokuGame extends Observable {
         return stringBuilder.toString();
     }
 
-    public Move getHint() {
-        return LogicSolver.createHint(board, SIZE);
+    public void getHint() {
+        Move hint = LogicSolver.createHint(board, SIZE);
+        if(hint != null) {
+            board[hint.row][hint.col] = hint.value;
+            Message msg = HINT;
+            msg.setMove(hint.row, hint.col, hint.value);
+            setChanged();
+            notifyObservers(msg);
+        }
     }
 }

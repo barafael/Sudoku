@@ -43,6 +43,7 @@ public class Controller implements Observer {
 
     Method defaultSolveMethod;
 
+    private final Background greenBg = new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY));
     private static final int TEXTFIELD_SIZE = 58;
     @FXML
     public VBox mainVBox;
@@ -157,9 +158,10 @@ public class Controller implements Observer {
                 case RESET:
                     resetTextfields(game);
                     break;
+                case HINT:
                 case VALID_ENTERED:
                     if (move != null) {
-                        textFields[move.row][move.col].setText(move.value + "");
+                        textFields[move.row][move.col].setText(move.toString());
                         textFields[move.row][move.col].setBackground(whiteBG);
                     } else updateAllTextfields(game);
                     break;
@@ -173,7 +175,7 @@ public class Controller implements Observer {
                     break;
                 case WON:
                     if (move != null) {
-                        textFields[move.row][move.col].setText(move.value + "");
+                        textFields[move.row][move.col].setText(move.toString());
                         textFields[move.row][move.col].setBackground(whiteBG);
                     } else updateAllTextfields(game);
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -240,7 +242,7 @@ public class Controller implements Observer {
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
-        if (!game.solve()) {
+        if (!game.bTrackSolve()) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Warning Dialog");
             alert.setHeaderText("Unsolvable Sudoku");
