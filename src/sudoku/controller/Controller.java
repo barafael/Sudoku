@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -153,9 +152,6 @@ public class Controller implements Observer {
                     break;
                 case INVALID_ENTERED:
                     if (move != null) {
-                        List<Move> moves = msg.getArgs();
-                        if (moves != null) {// look at length
-                        }
                         textFields[move.row][move.col].setBackground(redBG);
                     }
                     break;
