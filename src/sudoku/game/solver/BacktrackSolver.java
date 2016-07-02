@@ -2,10 +2,15 @@ package sudoku.game.solver;
 
 import sudoku.game.SudokuUtil;
 
+import java.time.Instant;
+
 public class BacktrackSolver {
     public static boolean solve(int[][] board, final int[][] initial, final int size) {
+        Instant tic = Instant.now();
         // start at upper left corner, the rest is recursion
-        return solve(board, initial, size, 0, 0);
+        boolean solution = solve(board, initial, size, 0, 0);
+        // System.out.println("Backtrack: " + Duration.between(tic, Instant.now()));
+        return solution;
     }
 
     private static boolean solve(int[][] board, final int[][] initial, int size, int row, int col) {

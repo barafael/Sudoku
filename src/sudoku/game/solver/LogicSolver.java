@@ -3,17 +3,16 @@ package sudoku.game.solver;
 import sudoku.controller.Move;
 import sudoku.game.SudokuUtil;
 
+import java.time.Instant;
+
 import static sudoku.game.SudokuUtil.isFull;
 
-/**
- * Created by ra on 01.07.16.
- * Part of Sudoku, in package sudoku.game.solver.
- */
 public class LogicSolver {
     /**
-     * This solver finds places where only one number is possible, and falls back on backtracking when none found.
+     * This solver finds places where only one number is possible, and falls back on backtracking when no unique found.
      */
     public static boolean solve(int[][] board, int size) {
+        Instant tic = Instant.now();
         if (solveHelper(board, size)) {
             return true;
         } else {
@@ -21,7 +20,9 @@ public class LogicSolver {
             for (int row = 0; row < size; row++) {
                 System.arraycopy(board[row], 0, copy[row], 0, size);
             }
-            return BacktrackSolver.solve(board, copy, size);
+            boolean solution = BacktrackSolver.solve(board, copy, size);
+            // System.out.println("Logic: " + Duration.between(tic, Instant.now()));
+            return solution;
         }
     }
 
