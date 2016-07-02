@@ -196,4 +196,12 @@ public class SudokuGame extends Observable {
             notifyObservers(msg);
         }
     }
+
+    public boolean isValid(int row, int col) {
+        int value = board[row][col];
+        board[row][col] = -1;
+        boolean valid = validPosition(row, col, value);
+        board[row][col] = value;
+        return valid;
+    }
 }
