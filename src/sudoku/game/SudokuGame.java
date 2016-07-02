@@ -22,16 +22,18 @@ public class SudokuGame extends Observable {
     /* Using simple 2-d array. Arrays can hold primitive types, collections cannot.
     Arrays have O(1) indexing and changing values. Size of board is constant.
     */
-    private static final int SIZE = 9;
+    private final int SIZE;
 
     // all arrays initialized with 0
-    private final int[][] board = new int[SIZE][SIZE];
-    private final int[][] initial = new int[SIZE][SIZE];
+    private final int[][] board;
+    private final int[][] initial;
 
-    public SudokuGame(int[][] initial) {
-        if (isPerfectSquare(initial.length) && isPerfectSquare(initial[0].length) &&
-                initial.length == initial[0].length &&
-                initial.length == SIZE) {
+    public SudokuGame(int[][] initial) throws IllegalArgumentException {
+        if (isPerfectSquare(initial.length) &&
+                initial.length == initial[0].length) {
+            SIZE = initial.length;
+            this.board = new int[SIZE][SIZE];
+            this.initial = new int[SIZE][SIZE];
             for (int row = 0; row < SIZE; row++) {
                 for (int col = 0; col < SIZE; col++) {
                     this.board[row][col] = 0;
@@ -42,6 +44,8 @@ public class SudokuGame extends Observable {
                     }
                 }
             }
+        } else {
+            throw new IllegalArgumentException("Not a valid initial Array!");
         }
     }
 
@@ -188,7 +192,7 @@ public class SudokuGame extends Observable {
 
     public void getHint() {
         Move hint = LogicSolver.createHint(board, SIZE);
-        if(hint != null) {
+        if (hint != null) {
             board[hint.row][hint.col] = hint.value;
             Message msg = HINT;
             msg.setMove(hint.row, hint.col, hint.value);
