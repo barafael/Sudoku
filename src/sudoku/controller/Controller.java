@@ -31,18 +31,19 @@ public class Controller implements Observer {
     private static final double MEDIUM = 0.35;
     private static final double HARD = 0.1;
     private double difficulty = EASY;
+
     private boolean liveErrorHighlight = false;
     private SudokuGame game;
     private final Stage primaryStage;
     private File initialState;
-    private final TextField[][] textFields = new TextField[SIZE][SIZE];
-    private final Background whiteBG = new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY));
 
+    private final TextField[][] textFields = new TextField[SIZE][SIZE];
+
+    private final Background whiteBG = new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY));
     private final Background bisqueBG = new Background(new BackgroundFill(Color.BISQUE, CornerRadii.EMPTY, Insets.EMPTY));
     private final Background redBG = new Background(new BackgroundFill(Color.ORANGERED, CornerRadii.EMPTY, Insets.EMPTY));
-    private Method defaultSolveMethod;
 
-    private final Background greenBg = new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY));
+    private Method defaultSolveMethod;
 
     private static final int TEXTFIELD_SIZE = 58;
     @FXML
@@ -97,7 +98,7 @@ public class Controller implements Observer {
                 textField.setMaxSize(TEXTFIELD_SIZE, TEXTFIELD_SIZE);
                 textField.setMinSize(TEXTFIELD_SIZE, TEXTFIELD_SIZE);
                 textField.setBackground(whiteBG);
-                textField.setStyle("-fx-font-family: Cairo; -fx-font-size: 30;");
+                textField.setStyle("-fx-font-family: Cairo; -fx-font-size: 26;");
                 limitNumberField(textField);
                 textField.setOnKeyTyped(event -> {
                     TextField source = (TextField) event.getSource();
@@ -121,8 +122,8 @@ public class Controller implements Observer {
             if (!text.matches("[1-9]\\d*")) {
                 textField.setText("");
             }
-            if (text.length() > 1) {
-                textField.setText(text.substring(0, 1));
+            if (text.length() > 2) {
+                textField.setText(text.substring(0, 2));
             }
         });
     }
