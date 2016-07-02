@@ -43,11 +43,12 @@ public class SudokuUtil {
     static boolean squareContains(int[][] board, int size, int row, int col, int value) {
         if (row < size && row >= 0 &&
                 col < size && row >= 0 &&
-                value <= size && value >/*=*/ 0) {
-            int squareRowIndex = row / 3;
-            int squareColIndex = col / 3;
-
+                value <= size && value > 0) {
             int blockSize = (int) Math.sqrt(size);
+
+            int squareRowIndex = row / blockSize;
+            int squareColIndex = col / blockSize;
+
             for (int rowIndex = squareRowIndex * blockSize; rowIndex < squareRowIndex * blockSize + blockSize; rowIndex++) {
                 for (int colIndex = squareColIndex * blockSize; colIndex < squareColIndex * blockSize + blockSize;
                      colIndex++) {
